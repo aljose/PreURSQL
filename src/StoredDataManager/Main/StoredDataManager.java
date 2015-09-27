@@ -166,8 +166,9 @@ public class StoredDataManager {
                     }
                 }
                 writer.closeFile();
-                Btree.insertar(keyHash.get(rowPKValue),offsets);
-                serializateIndex(keyHash,DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + targetTable + EXTENSION_ARCHIVO_INDICE);
+                Btree.insertar(keyHash.get(rowPKValue), offsets);
+                serializateIndex(keyHash, DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + targetTable + EXTENSION_ARCHIVO_INDICE);
+                serializateBtree(mHashBtrees.get(targetTable), DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + targetTable + EXTENSION_ARCHIVO_ARBOL);
                 result= 1;
             }catch(Exception ex){
                 System.err.println("Ha ocurrido un problema al ingresar datos, error: " +ex.getMessage());
@@ -177,7 +178,7 @@ public class StoredDataManager {
         return result;
     }
 
-    public int dropTable(String name) {
+    public int dropTable(String name) throws IOException {
         int result=0;
         if (isInitialized){
             File archivoArbol = new File(DIRECTORIO_DATOS+File.separator+getmCurrentDataBase()+File.separator+name+EXTENSION_ARCHIVO_ARBOL);
@@ -295,9 +296,9 @@ public class StoredDataManager {
      */
     public int flushToDisk(){
         try{
-            File[] listaTablas= getNombreTablas();
+            String[] listaTablas= getNombreTablas();
             for(int i=0; i<listaTablas.length;i++){
-                serializateBtree(listaTablas[i], DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + listaTablas[i].getName() + EXTENSION_ARCHIVO_ARBOL);
+                serializateBtree(mHashBtrees.get(listaTablas[i]), DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + listaTablas[i] + EXTENSION_ARCHIVO_ARBOL);
             }
             return 1;
         } catch(IOException e){
@@ -313,9 +314,19 @@ public class StoredDataManager {
      * Metodo encargado de obtener los nombres de las tablas para el directorio actual de la base de datos
      * @return Arreglo de objetos File que representan las tablas existentes
      */
-    private File[] getNombreTablas() throws IOException{
+    private String[] getNombreTablas() throws IOException{
             File directorio = new File(DIRECTORIO_DATOS + File.separator + mCurrentDataBase);
-            File[] listaTablas = directorio.listFiles();
+            String[] listaTablas = directorio.list(new FilenameFilter() {
+
+                @Override
+                public boolean accept(File dir, String name) {
+                    if (name.toLowerCase().endsWith(EXTENSION_ARCHIVO_TABLA)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
             return listaTablas;
         }
 
@@ -355,4 +366,3 @@ public class StoredDataManager {
     }
 
 }
-
