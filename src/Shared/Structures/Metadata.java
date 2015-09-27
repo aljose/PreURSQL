@@ -16,6 +16,10 @@ public class Metadata implements Serializable {
         this.metadata = metadata;
     }
 
+    public Metadata() {
+        this.metadata = null;
+    }
+
     /**
      * @return the metadata
      */
