@@ -31,7 +31,7 @@ public class WriteMetadata {
         inserter.initStoredDataManager("System");
 
         ArrayList<Field> campo = new ArrayList<Field>();
-        Field fielder = new Field(nombreEsquema, "String", false, "SchemaName", "System", false);
+        Field fielder = new Field(nombreEsquema, "String", false, "SchemaName", "System", true);
         campo.add(fielder);
 
         Row filas = new Row(campo);
@@ -82,10 +82,12 @@ public class WriteMetadata {
      * @param nombreEsquema
      * @param nombreTabla
      */
-//    public void deleteTabla(String nombreEsquema, String nombreTabla) {
-//
+    public void deleteTabla(String nombreEsquema, String nombreTabla) {
+
+        StoredDataManager deleter = new StoredDataManager();
+        deleter.initStoredDataManager("System");
 //        delete("Sytem", "Table", "TableName", "=", nombreTabla);
-//    }
+    }
 
     /**
      * anade una columna (fila) a la tabla de columnas de la metadata
@@ -107,9 +109,9 @@ public class WriteMetadata {
         Field fieldE = new Field(nombreEsquema, "String", false, "Schema", "System", true);
         Field fieldTa = new Field(nombreTabla, "String", false, "Table", "System", false);
         Field fieldCol = new Field(nombreColumna, "String", false, "Column", "System", false);
-        Field fieldTy = new Field(tipo, "String", false, "Type", "System", true);
-        Field fieldCo = new Field(constraints, "String", false, "Constraint", "System", true);
-        Field fieldPK = new Field(primaryKey, "String", false, "Primarykey", "System", true);
+        Field fieldTy = new Field(tipo, "String", false, "Type", "System", false);
+        Field fieldCo = new Field(constraints, "String", false, "Constraint", "System", false);
+        Field fieldPK = new Field(primaryKey, "String", false, "Primarykey", "System", false);
 
         campo.add(fieldE);
         campo.add(fieldTa);
@@ -127,10 +129,12 @@ public class WriteMetadata {
      * @param nombreTabla
      * @param nombreEsquema
      */
-//    public void deleteColumna(String nombreColumna, String nombreTabla, String nombreEsquema) {
-//
-//        delete("System", "Column", "ColumnName", "=", nombreColumna);
-//    }
+    public void deleteColumna(String nombreColumna, String nombreTabla, String nombreEsquema) {
+
+        StoredDataManager deleter = new StoredDataManager();
+        deleter.initStoredDataManager("System");
+        //       delete("System", "Column", "ColumnName", "=", nombreColumna);
+    }
 
     /**
      * Escribe a la tabla de consultas queryLog, una consulta
@@ -141,22 +145,31 @@ public class WriteMetadata {
      */
     public void queryLog(String nombreConsulta, String nombreTabla, String nombreEsquema) {
 
-        ArrayList<String> tempValor = new ArrayList();
-        tempValor.add(nombreEsquema);
-        tempValor.add(nombreTabla);
-        tempValor.add(nombreConsulta);
+        /*        ArrayList<String> tempValor = new ArrayList();
+         tempValor.add(nombreEsquema);
+         tempValor.add(nombreTabla);
+         tempValor.add(nombreConsulta);
 
-        ArrayList<String> tempCol = new ArrayList();
-        tempCol.add("Schema");
-        tempCol.add("Table");
-        tempCol.add("Query");
-
+         ArrayList<String> tempCol = new ArrayList();
+         tempCol.add("Schema");
+         tempCol.add("Table");
+         tempCol.add("Query");   */
         StoredDataManager inserter = new StoredDataManager();
         inserter.initStoredDataManager("System");
         ArrayList<Field> campo = new ArrayList<Field>();
 
-     //   InsertInto inserter = new InsertInto();
-  //      inserter.executeInsertion("QueryLog", tempCol, tempValor, "System");
+        Field schema = new Field(nombreEsquema, "String", false, "Schema", "System", true);
+        Field table = new Field(nombreTabla, "String", false, "Table", "System", false);
+        Field query = new Field(nombreConsulta, "String", false, "Query", "System", false);
+
+        campo.add(schema);
+        campo.add(table);
+        campo.add(query);
+
+        Row temp = new Row(campo);
+        inserter.insertIntoTable(temp);
+        //   InsertInto inserter = new InsertInto();
+        //      inserter.executeInsertion("QueryLog", tempCol, tempValor, "System");
     }
 
     /**
@@ -184,8 +197,24 @@ public class WriteMetadata {
         tempVal.add(tableReferenced);
         tempVal.add(schema);
 
-        InsertInto inserter = new InsertInto();
-        inserter.executeInsertion("ForeignKey", tempCol, tempVal, "System");
+        StoredDataManager inserter = new StoredDataManager();
+        inserter.initStoredDataManager("System");
+
+        ArrayList<Field> campo = new ArrayList<Field>();
+
+        Field columna = new Field(column, "String", false, "Column", "System", true);
+        Field origen = new Field(originTable, "String", false, "OriginTable", "System", false);
+        Field colReferenciada = new Field(columnReferenced, "columnReferenced", false, "Column", "System", false);
+        Field tabReferenciada = new Field(tableReferenced, "String", false, "tableReferenced", "System", false);
+        Field schemaName = new Field(schema, "String", false, "schema", "System", false);
+
+        campo.add(columna);
+        campo.add(origen);
+        campo.add(colReferenciada);
+        campo.add(tabReferenciada);
+        campo.add(schemaName);
+        Row temp = new Row(campo);
+        inserter.insertIntoTable(temp);
     }
 
     /**
@@ -193,10 +222,12 @@ public class WriteMetadata {
      *
      * @param schema
      */
-//    public void deleteForeignKey(String schema) {
-//
-//        delete("System", "Schema", "", "=", schema);
-//
-//    }
+    public void deleteForeignKey(String schema) {
+
+        StoredDataManager deleter = new StoredDataManager();
+        deleter.initStoredDataManager("System");
+        //      delete("System", "Schema", "", "=", schema);
+
+    }
 
 }

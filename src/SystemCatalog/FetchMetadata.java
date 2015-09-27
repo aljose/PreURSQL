@@ -21,47 +21,47 @@ public class FetchMetadata {
      *  Retorna la tabla del historico de consultas.
      * @return 
      */
-//    public Table fetchQueryLog() {
-//
-//        Table temp = select("System", "QueryLog", "all");
-//        return temp;        
-//    }
-//
-//    /**
-//     *  Regresa la tabla de tablas de main.
-//     * @return 
-//     */
-//    public Table fetchTables() {
-//
-//        Table temp = select("System", "Table", "all");
-//        return temp;
-//    }
-//
-//    /**
-//     * Regresa la tabla de columnas.
-//     * @return 
-//     */
-//    public Table  fetchColumns(  ) {
-//        
-//        Table temp = select ("System", "Column", "all");
-//        return temp;
-//    }
-//
-//    /**
-//     *  Regresa la tabla de las bases de datos existentes.
-//     * @return 
-//     */
-//    public Table fetchSchemas() {
-//
-//        Table temp = select("System", "Schema", "all");
-//
-//        return temp;
-//    }
-//    
-//    public Table fetchForeignKey() {
-//        
-//        Table temp = select("System", "Schema", "all");
-//        
-//        return temp;
-//    }
+    public Table fetchQueryLog() {
+
+   //     Table temp = select("System", "QueryLog", "all");
+        return null;        
+    }
+
+    /**
+     *  Regresa la tabla de tablas de main.
+     * @return 
+     */
+    public Table fetchTables() {
+
+   //     Table temp = select("System", "Table", "all");
+        return null;
+    }
+
+    /**
+     * Regresa la tabla de columnas.
+     * @return 
+     */
+    public Table  fetchColumns(  ) {
+        
+     //   Table temp = select ("System", "Column", "all");
+        return null;
+    }
+
+    /**
+     *  Regresa la tabla de las bases de datos existentes.
+     * @return 
+     */
+    public Table fetchSchemas() {
+
+   //     Table temp = select("System", "Schema", "all");
+
+        return null;
+    }
+    
+    public Table fetchForeignKey() {
+        
+   //     Table temp = select("System", "Schema", "all");
+        
+        return null;
+    }
 }
