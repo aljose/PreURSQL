@@ -1,11 +1,13 @@
 package StoredDataManager.BPlusTree;
 
+import java.io.Serializable;
+
 /**
   * @author Kevin 
   * Clase encargada de crear un nodo para el árbol B+.
  */
 
-public class NodoArbol {
+public class NodoArbol implements Serializable {
 
     /**
      * Se crean los atributos de clase. NumeroLlaves describe la cantidad de
