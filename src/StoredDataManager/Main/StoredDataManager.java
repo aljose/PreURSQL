@@ -446,7 +446,7 @@ public class StoredDataManager {
         try{
             FileInputStream inputFile= new FileInputStream(METADATA_PATH_TO_FILE);
             ObjectInputStream inputStream = new ObjectInputStream(inputFile);
-            deserializedMetadata= (ArrayList<ArrayList<ArrayList<String>>>) inputStream.readObject();
+            deserializedMetadata= (Metadata) inputStream.readObject();
             inputStream.close();
             inputFile.close();
         } catch (IOException e) {
