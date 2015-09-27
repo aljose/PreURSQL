@@ -36,7 +36,7 @@ public class PlanEjecucion {
 
              createDatabase();
              
-        } else if (comando.equals("dopDatabase")) {
+        } else if (comando.equals("dropDatabase")) {
 
             dropDatabase();
 
