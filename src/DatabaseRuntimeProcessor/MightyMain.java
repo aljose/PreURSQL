@@ -35,7 +35,7 @@ public class MightyMain {
         }
     }
 
-    private void processer(ArrayList<String> instruccion, String databaseName) {
+    public void processer(ArrayList<String> instruccion, String databaseName) {
 
         String instruction0 = instruccion.get(0);
 
@@ -139,15 +139,18 @@ public class MightyMain {
             case "drop":
 
                 if (instruccion.get(1).equals("table")) {
+                    System.out.println("drop table");
+                    PlanEjecucion plan = new PlanEjecucion("dropTable", instruccion);
                     DropTable dropTab = new DropTable();
                     dropTab.dropTable(databaseName, instruccion.get(2));
-                    PlanEjecucion plan = new PlanEjecucion("dropTable", instruccion);
                     break;
 
                 } else {
+                    System.out.println("dropdatabase");
+                    PlanEjecucion plan = new PlanEjecucion("dropDatabase", instruccion);
                     DropDatabase dropData = new DropDatabase();
                     dropData.dropDatabase(databaseName);
-                    PlanEjecucion plan = new PlanEjecucion("dropDatabase", instruccion);
+                    
                     break;
                 }
 
