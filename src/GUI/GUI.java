@@ -79,7 +79,7 @@ public class GUI extends javax.swing.JFrame {
 
         textScrollPanel.setViewportView(textEditor);
 
-        RUN.setIcon(new javax.swing.ImageIcon("C:\\Users\\JoséAlberto\\Desktop\\Escritorio\\II semestre 2015\\Bases 2015\\icon.png")); // NOI18N
+        RUN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon.png"))); // NOI18N
         RUN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 RUNActionPerformed(evt);
@@ -144,35 +144,25 @@ public class GUI extends javax.swing.JFrame {
 
     private void RunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunActionPerformed
         // TODO add your handling code here:
-//        String temp="";
-//        line = textEditor.getText().split("\\n");
-//        int count = 0;
-//        LexicalAnalysis lex = new LexicalAnalysis();
-//        Parser par = new Parser();
-//        System.out.println("Linea nueva");
-//        temp +="Manejo de errores\n";
-//        String allEntry = "";
-//        while (count <line.length){
-//            allEntry += " " + line[count];
-//            count++;
-//        }
-//        int count2 = 0;
-//        while (count2<lex.tokenize(allEntry).size()){
-//            ArrayList<String> inst =  lex.tokenize(allEntry).get(count2);
-//            if (par.parse(lex.tokenize(allEntry).get(count2))){
-//                System.out.println("True");
-//            }else{
-//                int linea = count+1;
-//                System.out.println("Error in line: " + linea);
-//                temp+="Error in line: " + linea+"\n";
-//            }
-//        }
-//        
-//            
-//        
-//        System.out.println(temp);
-//        textCheck.setText(temp);
+          String temp="";
+        line = textEditor.getText().split("\\n");
+        int count = 0;
+       LexicalAnalysis lex = new LexicalAnalysis();
+        Parser par = new Parser();
+        System.out.println("Linea nueva");
+        temp +="Manejo de errores\n";
         
+        while (count <line.length){
+           // LexicalAnalysis lex = new LexicalAnalysis();
+            if (par.parse(lex.tokenize(line[count]))){
+                System.out.println("True");
+            }else{
+                int linea = count+1;
+               System.out.println("Error in line: " + linea);
+                temp+="Error in line: " + linea+"\n";
+         }
+        count++;}
+        textCheck.setText(temp);
     }//GEN-LAST:event_RunActionPerformed
 
     private void RUNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RUNActionPerformed

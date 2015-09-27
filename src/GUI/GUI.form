@@ -145,7 +145,7 @@
         <Component class="javax.swing.JButton" name="RUN">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\Jos&#xe9;Alberto\Desktop\Escritorio\II semestre 2015\Bases 2015\icon.png"/>
+              <Image iconType="3" name="/images/icon.png"/>
             </Property>
           </Properties>
           <Events>
