@@ -8,6 +8,7 @@ import StoredDataManager.DBFile.DBField;
 import StoredDataManager.DBFile.DBWriter;
 import Shared.Structures.Field;
 import Shared.Structures.Row;
+import Shared.Structures.Metadata;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -31,7 +32,8 @@ public class StoredDataManager {
      * Constante que almacena la direccion de la carpeta en el sistema donde se almacenan las bases
      * de datos
      */
-    protected static final String  DIRECTORIO_DATOS = "Databases";
+    protected static final String DIRECTORIO_DATOS = "Databases";
+    protected static final String METADATA_PATH_TO_FILE=".system"+File.separator+"metadata.dat";
     protected static final String EXTENSION_ARCHIVO_TABLA =".db";
     protected static final String EXTENSION_ARCHIVO_ARBOL=".tree";
     protected static final String EXTENSION_ARCHIVO_INDICE=".index";
@@ -49,11 +51,11 @@ public class StoredDataManager {
         try{
             setCurrentDataBase(databaseName);
             this.mHashBtrees= new HashMap<String, ArbolBMas>();
-            String[] currentIndexes = getCurrentTreeName();
-            if(currentIndexes!=null){
-                if(currentIndexes.length>0){
-                    for(int i=0; i<currentIndexes.length; i++){
-                        mHashBtrees.put(currentIndexes[i], deserealizateBtree(DIRECTORIO_DATOS+File.separator+ mCurrentDataBase+File.separator+currentIndexes[i]));
+            String[] currentBTrees = getCurrentTreeName();
+            if(currentBTrees!=null){
+                if(currentBTrees.length>0){
+                    for(int i=0; i<currentBTrees.length; i++){
+                        mHashBtrees.put(currentBTrees[i], deserealizateBtree(currentBTrees[i].substring(0, currentBTrees[i].length()-4)));
                     }
                 }
             }
@@ -141,7 +143,7 @@ public class StoredDataManager {
             try{
                 DBWriter writer= new DBWriter();
                 writer.setTableFile(DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + targetTable + EXTENSION_ARCHIVO_TABLA);
-                keyHash= deserealizateIndex(DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + targetTable + EXTENSION_ARCHIVO_INDICE);
+                keyHash= deserializateIndex(targetTable);
                 int keyHashSize=keyHash.size();
                 if(keyHashSize>0){
                     lastRowPKIndex=keyHashSize;
@@ -169,7 +171,7 @@ public class StoredDataManager {
                 writer.closeFile();
                 Btree.insertar(keyHash.get(rowPKValue), offsets);
                 serializateIndex(keyHash, DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + targetTable + EXTENSION_ARCHIVO_INDICE);
-                serializateBtree(mHashBtrees.get(targetTable), DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + targetTable + EXTENSION_ARCHIVO_ARBOL);
+                serializateBtree(mHashBtrees.get(targetTable), targetTable);
                 result= 1;
             }catch(Exception ex){
                 System.err.println("Ha ocurrido un problema al ingresar datos, error: " +ex.getMessage());
@@ -179,6 +181,11 @@ public class StoredDataManager {
         return result;
     }
 
+    /**
+     * Metodo encargado de eliminar la tabla, eliminando el archivo, el inidice y el arbol.
+     * @param name
+     * @return 
+     */
     public int dropTable(String name) {
         int result=0;
         if (isInitialized){
@@ -198,7 +205,12 @@ public class StoredDataManager {
     }
 
 
-
+/**
+ * Metodo encargado de borar la carpeta de la base de datos, en caso de no ser la 
+ * base de datos qinstanciada en el momento
+ * @param name
+ * @return 
+ */
     public int dropDatabase(String name){
         int result;
         if(!name.equals(this.getmCurrentDataBase())){
@@ -228,9 +240,15 @@ public class StoredDataManager {
     }
 
 
-    private int serializateBtree(ArbolBMas Btree, String pathFile){
+    /**
+     * Metodo encargado de serializar el arbol en disco
+     * @param Btree
+     * @param pathFile
+     * @return 
+     */
+    private int serializateBtree(ArbolBMas Btree, String name){
         try{
-            FileOutputStream outputFile= new FileOutputStream(pathFile);
+            FileOutputStream outputFile= new FileOutputStream(DIRECTORIO_DATOS+File.separator+getmCurrentDataBase()+File.separator+name+EXTENSION_ARCHIVO_ARBOL);
             ObjectOutputStream outputStream = new ObjectOutputStream(outputFile);
             outputStream.writeObject(Btree);
             outputStream.close();
@@ -242,10 +260,15 @@ public class StoredDataManager {
         }
     }
 
-    private ArbolBMas deserealizateBtree(String filepath){
+    /**
+     * Metodo encargado de deserializar el arbol del disco
+     * @param filepath nombre de la tabla a la que pertenece el arbol
+     * @return ArbolBmas
+     */
+    private ArbolBMas deserealizateBtree(String name){
         ArbolBMas deserializedBtree=null;
         try{
-            FileInputStream inputFile= new FileInputStream(filepath);
+            FileInputStream inputFile= new FileInputStream(DIRECTORIO_DATOS+File.separator+getmCurrentDataBase()+File.separator+name+EXTENSION_ARCHIVO_ARBOL);
             ObjectInputStream inputStream = new ObjectInputStream(inputFile);
             deserializedBtree= (ArbolBMas) inputStream.readObject();
             inputStream.close();
@@ -264,9 +287,9 @@ public class StoredDataManager {
      * @param pathfile
      * @return
      */
-    private int serializateIndex(LinkedHashMap<String,Long> hashkey, String pathfile){
+    private int serializateIndex(LinkedHashMap<String,Long> hashkey, String name){
         try{
-            FileOutputStream outputFile= new FileOutputStream(pathfile);
+            FileOutputStream outputFile= new FileOutputStream(DIRECTORIO_DATOS+File.separator+getmCurrentDataBase()+File.separator+name+EXTENSION_ARCHIVO_INDICE);
             ObjectOutputStream outputStream = new ObjectOutputStream(outputFile);
             outputStream.writeObject(hashkey);
             outputStream.close();
@@ -283,10 +306,10 @@ public class StoredDataManager {
      * @param filepath ubicacion y nombre del archivo
      * @return Carga el hash que almacena el indice
      */
-    private LinkedHashMap<String,Long> deserealizateIndex(String filepath){
+    private LinkedHashMap<String,Long> deserializateIndex(String name){
         LinkedHashMap<String,Long> deserializedBtree=null;
         try{
-            FileInputStream inputFile= new FileInputStream(filepath);
+            FileInputStream inputFile= new FileInputStream(DIRECTORIO_DATOS+File.separator+getmCurrentDataBase()+File.separator+name+EXTENSION_ARCHIVO_INDICE);
             ObjectInputStream inputStream = new ObjectInputStream(inputFile);
             deserializedBtree= (LinkedHashMap<String,Long>) inputStream.readObject();
             inputStream.close();
@@ -307,7 +330,7 @@ public class StoredDataManager {
         try{
             String[] listaTablas= getNombreTablas();
             for(int i=0; i<listaTablas.length;i++){
-                serializateBtree(mHashBtrees.get(listaTablas[i]), DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + listaTablas[i]);
+                serializateBtree(mHashBtrees.get(listaTablas[i]), listaTablas[i].substring(0, listaTablas[i].length()-3));
             }
             return 1;
         } catch(IOException e){
@@ -339,9 +362,24 @@ public class StoredDataManager {
             return listaTablas;
         }
 
+    
+    /**
+     * Devuelve el hash de los arboles de las tablas de la base de datos instanciada
+     * @return 
+     */
+    public HashMap<String, ArbolBMas> getmHashBtrees() {
+        return mHashBtrees;
+    }
+
+    
+    
+   
 
     /**
-     * Metodo encargado de crear un archivo en blanco que almacena los campos de la tabla
+     * Metodo encargado de crear un archivo en blanco que almacena los campos de la tabla. Ademas crea e 
+     * introduce el arbol correspondiente al hash de arboles y crea el indice para la llave primaria de la
+     * tabla
+     * 
      */
 
     public int createTableFile(String name){
@@ -354,7 +392,7 @@ public class StoredDataManager {
                 file.close();
                 Btree.setNombreArbol(name);
                 this.mHashBtrees.put(name,Btree);
-                serializateIndex(hashKeys,DIRECTORIO_DATOS+File.separator+mCurrentDataBase+File.separator+name+EXTENSION_ARCHIVO_INDICE);
+                serializateIndex(hashKeys,name);
                 result=1;
             } catch (IOException exc){
                 System.err.println("No se ha podido crear la tabla "+name+", error: "+ exc.getMessage());
@@ -366,12 +404,79 @@ public class StoredDataManager {
     }
 
 
+    /**
+     * Metodo que obtiene el booleano que indica si el StoredDataManager se encuentra inicializado
+     * @return true si est'a inicializado, false si no lo esta
+     */
     public boolean getisInitialized() {
         return this.isInitialized;
     }
 
-    public void setIsInitialized(boolean isInitialized) {
+    /**
+     * Metodo que setea un booleano cuando si el  StoredDataManager se encuentra inicializado
+     * @param isInitialized 
+     */
+    private void setIsInitialized(boolean isInitialized) {
         this.isInitialized = isInitialized;
     }
 
+    
+    /**
+     * Metodo encargado de escribir en disco la metadata
+     * @param metadata Objeto que representa la metadata
+     * @return 1 en caso de exito, -1 si ocurre un error.
+     */
+    public int serializeMetadata(Metadata metadata){
+        try{
+            FileOutputStream outputFile= new FileOutputStream(METADATA_PATH_TO_FILE);
+            ObjectOutputStream outputStream = new ObjectOutputStream(outputFile);
+            outputStream.writeObject(metadata);
+            outputStream.close();
+            outputFile.close();
+            return 1;
+        } catch(IOException e){
+            System.err.println("No se ha podido guardar el metadata en disco, error: " + e.getMessage());
+            return -1;
+        }
+    }
+        
+        
+    public Metadata deserealizateMetadata(){
+        Metadata deserializedMetadata=null;
+        try{
+            FileInputStream inputFile= new FileInputStream(METADATA_PATH_TO_FILE);
+            ObjectInputStream inputStream = new ObjectInputStream(inputFile);
+            deserializedMetadata= (ArrayList<ArrayList<ArrayList<String>>>) inputStream.readObject();
+            inputStream.close();
+            inputFile.close();
+        } catch (IOException e) {
+            System.err.println("No se ha podido deserealizar el arbol, error: "+ e.getMessage());
+        } catch (ClassNotFoundException e) {
+             System.err.println("No se ha podido deserealizar el arbol, error: "+ e.getMessage());
+        }
+        return deserializedMetadata;
+    }
+        
+    
+    
+        /**
+         * Metodo encargado de calcular el numero de tuplas que existen en una tabla
+         * @param tableName Nombre de la tabla
+         * @return numero de registros.
+         */
+        public int numberOfRecords(String tableName){
+           int numberRecords=0;
+           if(getisInitialized()){
+               LinkedHashMap<String,Long> keyHash= deserializateIndex(tableName);
+               numberRecords=keyHash.size();
+           }else{
+               System.err.println("Necesita inicializar el StoredDataManager " );
+           }
+           return numberRecords;
+        }
+        
+    
+    
+    
+    
 }

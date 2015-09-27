@@ -16,7 +16,7 @@ public class testStoredDataManager {
 
 
         StoredDataManager storedDataManager = new StoredDataManager();
-        System.out.println(System.getProperty("user.dir"));
+        /*System.out.println(System.getProperty("user.dir"));
         storedDataManager.createDatabase("prueba");
         storedDataManager.initStoredDataManager("prueba");
         storedDataManager.createTableFile("Tabla1");
@@ -77,7 +77,9 @@ public class testStoredDataManager {
          row = new Row(fields);
          row.setTableName("Tabla2");
         storedDataManager.insertIntoTable(row);
-        storedDataManager.dropDatabase("prueba2");
+        storedDataManager.dropDatabase("prueba2");*/
+        storedDataManager.initStoredDataManager("prueba");
+        storedDataManager.dropTable("Tabla2");
 
 
 
