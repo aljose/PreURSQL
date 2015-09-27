@@ -38,7 +38,7 @@ public class StoredDataManager {
 
 
     public StoredDataManager(){
-        mHashBtrees= new HashMap<String, ArbolBMas>();
+        //mHashBtrees= new HashMap<String, ArbolBMas>();
     }
 
     /**
@@ -48,11 +48,12 @@ public class StoredDataManager {
     public void initStoredDataManager(String databaseName){
         try{
             setCurrentDataBase(databaseName);
+            this.mHashBtrees= new HashMap<String, ArbolBMas>();
             String[] currentIndexes = getCurrentTreeName();
             if(currentIndexes!=null){
                 if(currentIndexes.length>0){
                     for(int i=0; i<currentIndexes.length; i++){
-                        mHashBtrees.put(currentIndexes[i], deserealizateBtree(DIRECTORIO_DATOS+File.separator+ mCurrentDataBase+File.separator+currentIndexes[i]+EXTENSION_ARCHIVO_ARBOL));
+                        mHashBtrees.put(currentIndexes[i], deserealizateBtree(DIRECTORIO_DATOS+File.separator+ mCurrentDataBase+File.separator+currentIndexes[i]));
                     }
                 }
             }
@@ -178,7 +179,7 @@ public class StoredDataManager {
         return result;
     }
 
-    public int dropTable(String name) throws IOException {
+    public int dropTable(String name) {
         int result=0;
         if (isInitialized){
             File archivoArbol = new File(DIRECTORIO_DATOS+File.separator+getmCurrentDataBase()+File.separator+name+EXTENSION_ARCHIVO_ARBOL);
@@ -201,15 +202,23 @@ public class StoredDataManager {
     public int dropDatabase(String name){
         int result;
         if(!name.equals(this.getmCurrentDataBase())){
-            File directorio = new File(DIRECTORIO_DATOS+File.separator+name);
+            try{
+                File directorio = new File(DIRECTORIO_DATOS+File.separator+name);
 
-            if(directorio.exists()){
-                directorio.delete();
-                result=1;
-            }
-            else {
-                System.err.println("Error al crear base de datos ");
-                result= -1;
+                if(directorio.exists()){
+                    File[] currentFiles = directorio.listFiles();
+                    for (int i=0;i<currentFiles.length;i++){
+                        currentFiles[i].delete();
+                    }
+                    directorio.delete();
+                    result=1;
+                }
+                else {
+                    System.err.println("Error al crear base de datos ");
+                    result= -1;
+                }
+            }catch(Exception ex){
+                result =-1;
             }
         }else{
             System.err.println("Error al crear base de datos ");
@@ -298,7 +307,7 @@ public class StoredDataManager {
         try{
             String[] listaTablas= getNombreTablas();
             for(int i=0; i<listaTablas.length;i++){
-                serializateBtree(mHashBtrees.get(listaTablas[i]), DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + listaTablas[i] + EXTENSION_ARCHIVO_ARBOL);
+                serializateBtree(mHashBtrees.get(listaTablas[i]), DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + listaTablas[i]);
             }
             return 1;
         } catch(IOException e){

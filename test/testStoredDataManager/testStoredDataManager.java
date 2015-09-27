@@ -52,7 +52,7 @@ public class testStoredDataManager {
         fields.add(new Field("valor0984321","String",false,"Tabla2", "prueba2",false));
         fields.add(new Field("valor319ddf3", "String", false,"Tabla2", "prueba2",false));
          row = new Row(fields);
-         row.setTableName("Tabla1");
+         row.setTableName("Tabla2");
         storedDataManager.insertIntoTable(row);
 
         fields = new ArrayList<Field>();
@@ -64,6 +64,20 @@ public class testStoredDataManager {
         row = new Row(fields);
         row.setTableName("Tabla2");
         storedDataManager.insertIntoTable(row);
+        
+        storedDataManager.initStoredDataManager("prueba");
+        storedDataManager.createTableFile("Tabla2");
+
+         fields = new ArrayList<Field>();
+        fields.add(new Field("cacabubu","String",false,"Tabla2", "prueba2",true));
+        fields.add(new Field("asdasdsad", "String", false,"Tabla2", "prueba2",false));
+        fields.add(new Field("dafdfd","String",false,"Tabla2", "prueba2",false));
+        fields.add(new Field("dfdfdf","String",false,"Tabla2", "prueba2",false));
+        fields.add(new Field("pomskcks", "String", false,"Tabla2", "prueba2",false));
+         row = new Row(fields);
+         row.setTableName("Tabla2");
+        storedDataManager.insertIntoTable(row);
+        storedDataManager.dropDatabase("prueba2");
 
 
 
