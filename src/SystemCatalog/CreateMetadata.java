@@ -19,7 +19,7 @@ public class CreateMetadata {
 
     public void buildSystemCatalog() {
         //Definición del nombre del catálogo del sistema.   
-        String catalogName = "System";
+        String catalogName = "system";
 
         //Definición del nombre de las tablas que serán ingresadas en el System Catalog.
         String schemaName = "Schema";
@@ -80,6 +80,7 @@ public class CreateMetadata {
         //Creación de las tablas del System Catalog.
         StoredDataManager metadata = new StoredDataManager();
         metadata.createDatabase(catalogName);
+        metadata.initStoredDataManager(catalogName);
         metadata.createTableFile(schemaName);
         metadata.createTableFile(tableName);
         metadata.createTableFile(columnName);
