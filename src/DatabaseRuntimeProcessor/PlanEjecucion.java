@@ -23,6 +23,7 @@ public class PlanEjecucion {
         this.comando = comando;
         this.instruccion = instruccion;
         this.plan = new ArrayList<String>();
+        procesar();
     }
 
     /**
@@ -36,7 +37,7 @@ public class PlanEjecucion {
 
              createDatabase();
              
-        } else if (comando.equals("dopDatabase")) {
+        } else if (comando.equals("dropDatabase")) {
 
             dropDatabase();
 
