@@ -1,11 +1,14 @@
 package Analysis;
 
 import DatabaseRuntimeProcessor.CreateDatabase;
+import DatabaseRuntimeProcessor.CreateTable;
+import Shared.Structures.Field;
+import Shared.Structures.Row;
 import java.util.ArrayList;
 
-
 /**
- *Clase para analizar cada instruccion entrante
+ * Clase para analizar cada instruccion entrante
+ *
  * @author nicolasjimenez
  */
 public class Parser {
@@ -17,7 +20,7 @@ public class Parser {
      *
      */
     public Parser() {
-                                                                        
+
         comparators = new ArrayList();           // Comparadores 
         comparators.add("<");
         comparators.add(">");
@@ -34,23 +37,27 @@ public class Parser {
 
     /**
      * Llama a whatOperation para realizar el analisis.
+     *
      * @param instruction
-     * @return 
+     * @param databaseName
+     * @return
      */
-    public boolean parse( ArrayList<String> instruction ) {
+    public boolean parse(ArrayList<String> instruction) {
 
-        return whatOperation( instruction);
+        return whatOperation(instruction);
     }
 
     /**
-     * Ubica cada instruccion en su correspondiente metodo axuiliar para resolverlo
-     * A menos de que sea muy trivial, entonces se comprueba aqui mismo.
-     * @return 
+     * Ubica cada instruccion en su correspondiente metodo axuiliar para
+     * resolverlo A menos de que sea muy trivial, entonces se comprueba aqui
+     * mismo.
+     *
+     * @return
      */
-    private boolean whatOperation( ArrayList<String> instruction  )  {
+    private boolean whatOperation(ArrayList<String> instruction) {
 
         int instructionSize = instruction.size();
-        
+
         if (instructionSize == 0) {
             return false;
         }
@@ -71,14 +78,12 @@ public class Parser {
                     return false;
                 }
 
-                if (  !isNumeric(instruction.get(2)) ){
-                    
-                    CreateDatabase temp = new CreateDatabase();
-                    temp.createDatabase(instruction.get(2));
+                if (!isNumeric(instruction.get(2))) {
+
                     return true;
                 }
                 return false;
-                
+
             } else if (token1.equalsIgnoreCase("table")) {
 
                 return createTable(instruction, instructionSize);
@@ -140,7 +145,7 @@ public class Parser {
         }
         if (token0.equalsIgnoreCase("insert")) {
 
-            return insert(  instruction , instructionSize);
+            return insert(instruction, instructionSize);
         } else {
             return false;
         }
@@ -148,8 +153,9 @@ public class Parser {
 
     /**
      * Metodo que analiza el drop, tanto si es de table como de database
+     *
      * @param size
-     * @return 
+     * @return
      */
     private boolean drop(ArrayList<String> instruction, int size) {
 
@@ -169,11 +175,12 @@ public class Parser {
 
     /**
      * Metodo para analizar el create Table
+     *
      * @param size
-     * @return 
+     * @return
      */
-    private boolean createTable(ArrayList<String> instruction,  int size) {
- 
+    private boolean createTable(ArrayList<String> instruction, int size) {
+
         if (size < 15) {
             return false;
         }
@@ -188,22 +195,22 @@ public class Parser {
         if (continuar + 8 > size) {
             return false;
         }
-
         if (!instruction.get(continuar + 1).equalsIgnoreCase("primary")
                 || !instruction.get(continuar + 2).equalsIgnoreCase("key") || !instruction.get(continuar + 3).equals("(")
                 || isNumeric(instruction.get(continuar + 4)) || !instruction.get(continuar + 5).equals(")")) {
             return false;
         }
-        return instruction.get(continuar + 6).equals(")") || instruction.get(continuar + 7).equals(";");
+        return instruction.get(continuar + 6).equals(")") || instruction.get(continuar + 7).equals(";");//            createTab.createTable(databaseName, instruction.get(2), columnas );
     }
 
     /**
-     * El metodo createIndex revisa que esta sentencia este bien formulada, siguiendo el tamano y los
-     * estandares correspondientes
+     * El metodo createIndex revisa que esta sentencia este bien formulada,
+     * siguiendo el tamano y los estandares correspondientes
+     *
      * @param size
-     * @return 
+     * @return
      */
-    private boolean createIndex(ArrayList<String> instruction,  int size) {
+    private boolean createIndex(ArrayList<String> instruction, int size) {
 
         if (instruction.size() != 8) {
             return false;
@@ -215,11 +222,13 @@ public class Parser {
     }
 
     /**
-     * El alter revisa la sintaxis de un alter table, que cumpla longitud y parametros establecidos 
+     * El alter revisa la sintaxis de un alter table, que cumpla longitud y
+     * parametros establecidos
+     *
      * @param size
-     * @return 
+     * @return
      */
-    private boolean alter( ArrayList<String> instruction, int size) {
+    private boolean alter(ArrayList<String> instruction, int size) {
 
         if (size != 15) {
             return false;
@@ -236,19 +245,20 @@ public class Parser {
                 && instruction.get(9).equals(")") && instruction.get(10).equalsIgnoreCase("references")
                 && instruction.get(12).equals("(") && instruction.get(14).equals(")");
     }
-    
+
     /**
-     *  Select procesa la sentencia select, revisando las columnas, (* La unica funcion agregada (si hay))
-     * La tabla o el join de tablas ( si se selecciona una sola tabla no puede haber joins) 
-     * Sino solo una tabla es valido
-     * El where statement si hay, la cual es una columna comparada con un valor o con un operador unario
-     * El group si hay es para una lista de columnas
-     * For Json o For XML (si hay, no se pueden tener los dos al mismo tiempo
-     * )
+     * Select procesa la sentencia select, revisando las columnas, (* La unica
+     * funcion agregada (si hay)) La tabla o el join de tablas ( si se
+     * selecciona una sola tabla no puede haber joins) Sino solo una tabla es
+     * valido El where statement si hay, la cual es una columna comparada con un
+     * valor o con un operador unario El group si hay es para una lista de
+     * columnas For Json o For XML (si hay, no se pueden tener los dos al mismo
+     * tiempo )
+     *
      * @param size
-     * @return 
+     * @return
      */
-    private boolean select( ArrayList<String> instruction, int size) {
+    private boolean select(ArrayList<String> instruction, int size) {
 
         if (size < 4) {
             return false;
@@ -258,7 +268,7 @@ public class Parser {
         if (continuar == -1 || !(size > continuar + 1)) {
             return false;
         }
-        continuar = join(instruction,continuar + 1, size);// revisa la sentencia join o la unica tabla
+        continuar = join(instruction, continuar + 1, size);// revisa la sentencia join o la unica tabla
 
         if (continuar == 0) {
             return true;
@@ -266,7 +276,7 @@ public class Parser {
         if (continuar == -1) {
             return false;
         }
-        String instruccion = instruction.get(continuar);  
+        String instruccion = instruction.get(continuar);
         if (instruccion.equalsIgnoreCase("where")) {
 
             if (size <= continuar + 3) {
@@ -280,7 +290,7 @@ public class Parser {
 
                         continuar = whereStatement(instruction, continuar, continuar + 5, continuar + 4);  // si termina el where en un is not null
                         if (continuar == -1) {                                                                          // entonces se sigue
-                           
+
                             return false;
                         }
                         instruccion = instruction.get(continuar);
@@ -292,12 +302,12 @@ public class Parser {
                         return false;
                     }
 
-                } else if (instruction.get(continuar + 4).equalsIgnoreCase("group")                               //ehereefefefef****
+                } else if (instruction.get(continuar + 4).equalsIgnoreCase("group") //ehereefefefef****
                         || instruction.get(continuar + 4).equalsIgnoreCase("for")) {
-   
-                    continuar = whereStatement(instruction,continuar, continuar + 4, continuar + 4); // si de fijo sigue y no hay is not null
+
+                    continuar = whereStatement(instruction, continuar, continuar + 4, continuar + 4); // si de fijo sigue y no hay is not null
                     if (continuar == -1) {
-                        return false;  
+                        return false;
                     }
                     instruccion = instruction.get(continuar);
                 } else {
@@ -305,7 +315,7 @@ public class Parser {
                 }
             } else if (size == continuar + 4) {
 
-                return whereStatement(instruction,continuar, size, continuar + 4) != -1;  //si ya es el fin un where sin (not null)
+                return whereStatement(instruction, continuar, size, continuar + 4) != -1;  //si ya es el fin un where sin (not null)
             }           // El where revisa el where si existe
         }
 
@@ -325,7 +335,7 @@ public class Parser {
                     instruccion = instruction.get(continuar);
                     break;
                 }
-                if (i + 1 == size && !token.equals(",") )   {
+                if (i + 1 == size && !token.equals(",")) {
                     return !last;
                 }
                 if (last) {
@@ -345,16 +355,18 @@ public class Parser {
         }
         if (instruccion.equalsIgnoreCase("for")) {  // si es un for, o xml o json
 
-            return (size == continuar + 2 && ( instruction.get(continuar + 1).equalsIgnoreCase("xml")
-                    || instruction.get(continuar + 1).equals("json") ));
+            return (size == continuar + 2 && (instruction.get(continuar + 1).equalsIgnoreCase("xml")
+                    || instruction.get(continuar + 1).equals("json")));
         }
         return false;
     }
 
     /**
-     * Revisa la sentencia update con cada sentencia que incluye ademas de la sentencia where si hay
+     * Revisa la sentencia update con cada sentencia que incluye ademas de la
+     * sentencia where si hay
+     *
      * @param size
-     * @return 
+     * @return
      */
     private boolean update(ArrayList<String> instruction, int size) {
 
@@ -373,13 +385,15 @@ public class Parser {
             return false;
         }
         return whereStatement(instruction, 6, size, 10) != -1;  //metodo auxiliar el 6 equivale al punto de inicio, el size tamano
-                                                                        // El 10 es el punto de requerimiento de finalizacion 
+        // El 10 es el punto de requerimiento de finalizacion 
     }
 
     /**
-     * El delete es similar al update revisa la sintaxis prestablecida y el where statement si hay
+     * El delete es similar al update revisa la sintaxis prestablecida y el
+     * where statement si hay
+     *
      * @param size
-     * @return 
+     * @return
      */
     private boolean delete(ArrayList<String> instruction, int size) {
 
@@ -392,14 +406,16 @@ public class Parser {
         if (size < 7 || size > 8) {
             return false;
         }                                                               //metodo auxiliar el 3 equivale al punto de inicio, el size tamano
-        return whereStatement(instruction,3, size, 7) != -1;   //  // El 7 es el punto de requeriemiento de finalizacion 
+        return whereStatement(instruction, 3, size, 7) != -1;   //  // El 7 es el punto de requeriemiento de finalizacion 
     }
 
     /**
-     * El insert revisa que una la instruccion este bien formulada, especialmente que el numero de columnas
-     * sea igual al numero de valores. Ademas de su prestablecida sintaxis
+     * El insert revisa que una la instruccion este bien formulada,
+     * especialmente que el numero de columnas sea igual al numero de valores.
+     * Ademas de su prestablecida sintaxis
+     *
      * @param size
-     * @return 
+     * @return
      */
     private boolean insert(ArrayList<String> instruction, int size) {
 
@@ -495,10 +511,11 @@ public class Parser {
     }
 
     /**
-     * Muy importante metodo que revisa si un string es un numero o si incluye un caracter no permitido,
-     * o una palabra reservada
+     * Muy importante metodo que revisa si un string es un numero o si incluye
+     * un caracter no permitido, o una palabra reservada
+     *
      * @param str
-     * @return 
+     * @return
      */
     private boolean isNumeric(String str) {
 
@@ -507,18 +524,18 @@ public class Parser {
                 || str.contains("$") || str.contains("^") || str.contains("|") || str.contains(";")) {
             return true;
         }
-        if ( str.equalsIgnoreCase("select") || str.equalsIgnoreCase("from") || str.equalsIgnoreCase("where") || 
-                str.equalsIgnoreCase("group") || str.equalsIgnoreCase("by")  ||  str.equalsIgnoreCase("for") || 
-                str.equalsIgnoreCase("xml") || str.equalsIgnoreCase("json") || str.equalsIgnoreCase("join") || 
-                str.equalsIgnoreCase("update") || str.equalsIgnoreCase("set") || str.equalsIgnoreCase("delete") ||
-                str.equalsIgnoreCase("insert") || str.equalsIgnoreCase("into") || str.equalsIgnoreCase("values") ||
-                str.equalsIgnoreCase("create") || str.equalsIgnoreCase("database") || str.equalsIgnoreCase("table") ||
-                str.equalsIgnoreCase("databases") || str.equalsIgnoreCase("index") || str.equalsIgnoreCase("drop") ||
-                str.equalsIgnoreCase("start") || str.equalsIgnoreCase("get") || str.equalsIgnoreCase("status") ||
-                str.equalsIgnoreCase("stop") || str.equalsIgnoreCase("display") || str.equalsIgnoreCase("list") ||
-                str.equalsIgnoreCase("alter") || str.equalsIgnoreCase("foreign") || str.equalsIgnoreCase("key") ||
-                str.equalsIgnoreCase("on") || str.equalsIgnoreCase("references") || aggregate.contains(str) ||
-                comparators.contains(str)){
+        if (str.equalsIgnoreCase("select") || str.equalsIgnoreCase("from") || str.equalsIgnoreCase("where")
+                || str.equalsIgnoreCase("group") || str.equalsIgnoreCase("by") || str.equalsIgnoreCase("for")
+                || str.equalsIgnoreCase("xml") || str.equalsIgnoreCase("json") || str.equalsIgnoreCase("join")
+                || str.equalsIgnoreCase("update") || str.equalsIgnoreCase("set") || str.equalsIgnoreCase("delete")
+                || str.equalsIgnoreCase("insert") || str.equalsIgnoreCase("into") || str.equalsIgnoreCase("values")
+                || str.equalsIgnoreCase("create") || str.equalsIgnoreCase("database") || str.equalsIgnoreCase("table")
+                || str.equalsIgnoreCase("databases") || str.equalsIgnoreCase("index") || str.equalsIgnoreCase("drop")
+                || str.equalsIgnoreCase("start") || str.equalsIgnoreCase("get") || str.equalsIgnoreCase("status")
+                || str.equalsIgnoreCase("stop") || str.equalsIgnoreCase("display") || str.equalsIgnoreCase("list")
+                || str.equalsIgnoreCase("alter") || str.equalsIgnoreCase("foreign") || str.equalsIgnoreCase("key")
+                || str.equalsIgnoreCase("on") || str.equalsIgnoreCase("references") || aggregate.contains(str)
+                || comparators.contains(str)) {
             return true;
         }
 
@@ -531,20 +548,21 @@ public class Parser {
     }
 
     /**
-     * El join verifica que la lista de tablas con join esten bien escritas. Es un auxilar en varios metodos
-     * principales
+     * El join verifica que la lista de tablas con join esten bien escritas. Es
+     * un auxilar en varios metodos principales
+     *
      * @param startPoint
      * @param size
-     * @return 
+     * @return
      */
-    private int join( ArrayList<String> instruction, int startPoint, int size) {
+    private int join(ArrayList<String> instruction, int startPoint, int size) {
         if (startPoint + 1 > size) {
             return -1;
         }
         if (startPoint + 1 == size && !isNumeric(instruction.get(startPoint))) {
             return 0;
         }
-        if (startPoint + 2 == size ){
+        if (startPoint + 2 == size) {
             return -1;
         }
         if (startPoint + 2 < size) {
@@ -555,22 +573,21 @@ public class Parser {
         }
         String currentToken;
         boolean lastElement = false;  // false si el ultimo fue un join, true si el ultimo fue una tabla
-        
+
         for (int i = startPoint; i < size; i++) {
-            
+
             currentToken = instruction.get(i);
-            
-            if (i+1 == size ){
-                
-                if (!lastElement && !currentToken.equalsIgnoreCase("join")){
+
+            if (i + 1 == size) {
+
+                if (!lastElement && !currentToken.equalsIgnoreCase("join")) {
                     return 0;
-                }
-                else{
+                } else {
                     return -1;
                 }
             }
-            if (i+1 < size) {
-                
+            if (i + 1 < size) {
+
                 if (instruction.get(i + 1).equalsIgnoreCase("where") || instruction.get(i + 1).equalsIgnoreCase("group")
                         || instruction.get(i + 1).equalsIgnoreCase("for")) {
 
@@ -583,23 +600,25 @@ public class Parser {
                 }
                 lastElement = false;
             } else {
-                if (isNumeric(currentToken) || lastElement == true )  {
+                if (isNumeric(currentToken) || lastElement == true) {
                     return -1;
                 }
-                lastElement= true;
+                lastElement = true;
             }
         }
         return -1;
     }
 
     /**
-     * Revisa que la hilera de columnas esten bien formuladas con comas   el punto de inicio y final
+     * Revisa que la hilera de columnas esten bien formuladas con comas el punto
+     * de inicio y final
+     *
      * @param startPoint
      * @param size
      * @param endToken
-     * @return 
+     * @return
      */
-    private int columns( ArrayList<String> instruction,int startPoint, int size, String endToken) {
+    private int columns(ArrayList<String> instruction, int startPoint, int size, String endToken) {
 
         String startToken = instruction.get(startPoint);
 
@@ -610,7 +629,7 @@ public class Parser {
         boolean last = false;  // false si el ultimo fue una , 
 
         for (int i = startPoint; i < size; i++) {
-            
+
             currentToken = instruction.get(i);
             if (!isNumeric(currentToken) && !currentToken.equals(",") && !currentToken.equals(endToken)) {
                 if (last) {
@@ -627,7 +646,7 @@ public class Parser {
                 last = false;
 
                 if (i + 3 < size) {
-                    if (aggregate.contains(instruction.get(i + 1))) { 
+                    if (aggregate.contains(instruction.get(i + 1))) {
                         if (instruction.get(i + 2).equals("(") && !isNumeric(instruction.get(i + 3)) && instruction.get(i + 4).equals(")")
                                 && instruction.get(i + 5).equalsIgnoreCase(endToken)) {
                             return i + 5;
@@ -638,7 +657,7 @@ public class Parser {
                     System.out.println("aqui");
                     return -1;
                 }
-                
+
             } else if (currentToken.equals(endToken)) { //llega a from, sin pasar por los aggregate functions.
 
                 if (!last) {
@@ -647,7 +666,7 @@ public class Parser {
                 return i;
             } else {
                 return -1;
-            } 
+            }
         }
         System.out.println("aer");
         return -1;
@@ -655,12 +674,13 @@ public class Parser {
 
     /**
      * Metodo auxiliar para cuando se crea una tabla y se declaran las columnas
+     *
      * @param startPoint
      * @param size
      * @param finishToken
-     * @return 
+     * @return
      */
-    private int columnDefinition( ArrayList<String> instruction,  int startPoint, int size, String finishToken) {
+    private int columnDefinition(ArrayList<String> instruction, int startPoint, int size, String finishToken) {
 
         int phase = 0;
 
@@ -728,14 +748,16 @@ public class Parser {
     }
 
     /**
-     * El where es un importante metodo auxiliar que revisa que la sentencia where y los requerimientos de 
-     *  la instruccion principal sean cumplidos, en extension y parametros.
+     * El where es un importante metodo auxiliar que revisa que la sentencia
+     * where y los requerimientos de la instruccion principal sean cumplidos, en
+     * extension y parametros.
+     *
      * @param start
      * @param size
      * @param requirement
-     * @return 
+     * @return
      */
-    private int whereStatement( ArrayList<String> instruction, int start, int size, int requirement) {
+    private int whereStatement(ArrayList<String> instruction, int start, int size, int requirement) {
 
         if (!(instruction.get(start).equalsIgnoreCase("where")) || isNumeric(instruction.get(start + 1))) {
             return -1;

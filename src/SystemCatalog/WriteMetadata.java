@@ -49,7 +49,7 @@ public class WriteMetadata {
 
         StoredDataManager deleter = new StoredDataManager();
         deleter.initStoredDataManager("System");
-
+      
         //  Delete deleter = new Delete ("Schema", "SchemaName" , "=", nombreEsquema );
         //     delete("SchemaName", "Schema", "=", nombreEsquema, "System");
     }

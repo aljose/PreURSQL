@@ -15,9 +15,11 @@ public class PlanEjecucion {
     private final String comando;
     private final ArrayList<String> instruccion;
     private final ArrayList<String> plan;
+    private final WRFiles archivos;
 
     public PlanEjecucion(String comando, ArrayList<String> instruccion) {
 
+        this.archivos = new WRFiles();
         this.comando = comando;
         this.instruccion = instruccion;
         this.plan = new ArrayList<String>();
@@ -28,81 +30,84 @@ public class PlanEjecucion {
      *
      * @return
      */
-    public ArrayList<String> procesar() {
+    public void procesar() {
 
         if (comando.equals("createDatabase")) {
 
-            return createDatabase();
-
+             createDatabase();
+             
         } else if (comando.equals("dopDatabase")) {
-            
-            return dropDatabase();
 
-        } else if (comando.equals("listDatabase")) {
-            
-            return listDatabases();
+            dropDatabase();
+
+        } else if (comando.equals("listDatabases")) {
+
+            listDatabases();
 
         } else if (comando.equals("stop")) {
 
-          //  return stop;
-          return null;  
-            
+            //  return stop;
+            return;
+
         } else if (comando.equals("start")) {
 
-            return null;
-            
+            return ;
+
         } else if (comando.equals("getStatus")) {
-            
-            return null;
+
+            return ;
 
         } else if (comando.equals("display")) {
+
+            display();
             
-            return display();
+        } else if (comando.equals("update")) {
+            
+            update();
 
         } else if (comando.equals("set")) {
-            
-            return null;
+
+            set();
 
         } else if (comando.equals("createTable")) {
-            
-            return createTable();
+
+             createTable();
 
         } else if (comando.equals("alter")) {
 
-            return alter();
-            
+            alter();
+
         } else if (comando.equals("dropTable")) {
 
-            return dropTable();
-            
+            dropTable();
+
         } else if (comando.equals("createIndex")) {
 
-            return createIndex();
-            
+            createIndex();
+
         } else if (comando.equals("select")) {
 
-            return select();
-            
+            select();
+
         } else if (comando.equals("delete")) {
 
-            return delete();
-            
+            delete();
+
         } else if (comando.equals("insert")) {
 
-            return insert();
-            
+            insert();
+        
         } else {
 
             System.err.print("Error invalid command");
             System.out.println("should not have happened");
-            return null;
         }
     }
 
     /**
      * @return
      */
-    private ArrayList<String> createDatabase() {
+    private void createDatabase() {
 
         String line1 = "Se analiza que la instruccion de create database este bien formulada.";
         String line2 = "Se crea una carpeta en el sistema de archivos para guardar las tablas de la base de datos: "
@@ -111,13 +116,13 @@ public class PlanEjecucion {
         plan.add(line1);
         plan.add(line2);
         plan.add(line3);
-        return plan;
+        archivos.writer("PlanDeEjecucion", plan);
     }
 
     /**
      * @return
      */
-    private ArrayList<String> dropDatabase() {
+    private void dropDatabase() {
 
         String line1 = "Se analiza que la instruccion de drop database este bien formulada.";
         String line2 = "Se elimina la  carpeta en el sistema de archivos que almacena las tablase de la base de datos: "
@@ -126,13 +131,13 @@ public class PlanEjecucion {
         plan.add(line1);
         plan.add(line2);
         plan.add(line3);
-        return plan;
+        archivos.writer("PlanDeEjecucion", plan);
     }
 
     /**
      * @return
      */
-    private ArrayList<String> listDatabases() {
+    private void listDatabases() {
 
         String line1 = "Se analiza que la instruccion de list databases este bien formulada";
         String line2 = "Se busca en la metadata las bases de datos creadas";
@@ -140,7 +145,7 @@ public class PlanEjecucion {
         plan.add(line1);
         plan.add(line2);
         plan.add(line3);
-        return plan;
+        archivos.writer("PlanDeEjecucion", plan);
     }
 
     /**
@@ -156,7 +161,7 @@ public class PlanEjecucion {
     /**
      * @return
      */
-    private ArrayList<String> display() {
+    private void display() {
 
         String line1 = "Se analiza que la instruccion de display database este bien formulada";
         String line2 = "Se busca en la metadata del System Catalog la informacion sobre la base de datos: "
@@ -166,13 +171,13 @@ public class PlanEjecucion {
         plan.add(line1);
         plan.add(line2);
         plan.add(line3);
-        return plan;
+        archivos.writer("PlanDeEjecucion", plan);
     }
 
     /**
      *
      */
-    private ArrayList<String> set() {
+    private void set() {
 
         String line1 = "Se analiza que la instruccion de set este bien formulada";
         String line2 = "Se busca en la metadata del System Catalog la informacion sobre la base de datos: "
@@ -182,13 +187,13 @@ public class PlanEjecucion {
         plan.add(line1);
         plan.add(line2);
         plan.add(line3);
-        return plan;
+        archivos.writer("PlanDeEjecucion", plan);
     }
 
     /**
      * @return
      */
-    private ArrayList<String> createTable() {
+    private void createTable() {
 
         String line1 = "Se analiza que la instruccion de create table este bien formulada";
         String line2 = "Se procede a crear una tabla en el esquema establecido anteriormente para esto se extrae "
@@ -198,26 +203,26 @@ public class PlanEjecucion {
         plan.add(line1);
         plan.add(line2);
         plan.add(line3);
-        return plan;
+        archivos.writer("PlanDeEjecucion", plan);
     }
 
     /**
      * @return
      */
-    private ArrayList<String> alter() {
+    private void alter() {
         String line1 = "Se analiza que la instruccion de alter  este bien formulada";
         String line2 = "Se busca en la metadata del System Catalog la informacion sobre la base de datos: "
                 + instruccion.get(2);
         String line3 = "Con base en la informacion obtenida se agrega el constraint de una llave foranea en la metadata"
                 + " de la tabla " + instruccion.get(2);
         plan.add(line3);
-        return plan;
+        archivos.writer("PlanDeEjecucion", plan);
     }
 
     /**
      * @return
      */
-    private ArrayList<String> createIndex() {
+    private void createIndex() {
 
         String line1 = "Se analiza que la instruccion de create index este bien formulada";
         String line2 = "Se busca en la metadata del System Catalog la informacion sobre la tabla: "
@@ -227,13 +232,13 @@ public class PlanEjecucion {
         plan.add(line1);
         plan.add(line2);
         plan.add(line3);
-        return plan;
+        archivos.writer("PlanDeEjecucion", plan);
     }
 
     /**
      * @return
      */
-    private ArrayList<String> select() {
+    private void select() {
 
         String line1 = "Se analiza que la instruccion de select  este bien formulada";
         String line2 = "Se busca en la metadata del System Catalog la informacion sobre la tabla y/o conjunto de tablas"
@@ -245,13 +250,13 @@ public class PlanEjecucion {
         plan.add(line2);
         plan.add(line3);
         plan.add(line4);
-        return plan;
+        archivos.writer("PlanDeEjecucion", plan);
     }
 
     /**
      * @return
      */
-    private ArrayList<String> update() {
+    private void update() {
 
         String line1 = "Se analiza que la instruccion de update este bien formulada";
         String line2 = "Se busca en la metadata del System Catalog la informacion sobre la tabla: "
@@ -260,13 +265,13 @@ public class PlanEjecucion {
         plan.add(line1);
         plan.add(line2);
         plan.add(line3);
-        return plan;
+        archivos.writer("PlanDeEjecucion", plan);
     }
 
     /**
      * @return
      */
-    private ArrayList<String> delete() {
+    private void delete() {
 
         String line1 = "Se analiza que la instruccion de delete este bien formulada";
         String line2 = "Se busca en la metadata del System Catalog la informacion sobre la tabla: "
@@ -275,13 +280,13 @@ public class PlanEjecucion {
         plan.add(line1);
         plan.add(line2);
         plan.add(line3);
-        return plan;
+        archivos.writer("PlanDeEjecucion", plan);
     }
 
     /**
      * @return
      */
-    private ArrayList<String> insert() {
+    private void insert() {
 
         String line1 = "Se analiza que la instruccion de insert into este bien formulada";
         String line2 = "Se busca en la metadata del System Catalog la informacion sobre la tabla: "
@@ -290,7 +295,7 @@ public class PlanEjecucion {
         plan.add(line1);
         plan.add(line2);
         plan.add(line3);
-        return plan;
+        archivos.writer("PlanDeEjecucion", plan);
     }
 
     /**
@@ -301,7 +306,7 @@ public class PlanEjecucion {
     /**
      * @return
      */
-    private ArrayList<String> dropTable() {
+    private void dropTable() {
 
         String line1 = "Se analiza que la instruccion de drop table este bien formulada";
         String line2 = "Se busca en la metadata del System Catalog la informacion sobre la tabla: "
@@ -310,6 +315,6 @@ public class PlanEjecucion {
         plan.add(line1);
         plan.add(line2);
         plan.add(line3);
-        return plan;
+        archivos.writer("PlanDeEjecucion", plan);
     }
 }

@@ -125,6 +125,8 @@ public class DropTable {
     public void deleteFromDisc(String databaseName, String tableName){
         
         StoredDataManager temp = new StoredDataManager();    
+        temp.initStoredDataManager(databaseName);
+        temp.dropTable(tableName);
     }
     
 }

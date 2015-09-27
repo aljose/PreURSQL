@@ -4,6 +4,7 @@ package DatabaseRuntimeProcessor;/*
  * Al hacer esto se debe guardar tanto en disco como en la metadata de urSQL.
  */
 
+
 import Shared.Structures.Field;
 import Shared.Structures.Row;
 import StoredDataManager.Main.StoredDataManager;
@@ -47,25 +48,29 @@ public class CreateTable {
                 nullability = "notnull";
             }
             String primary = null;
-            if ( columna.isPrimaryKey()) {
-                
+            if (columna.isPrimaryKey()) {
+
                 primary = "true";
-            }
-            else{
+            } else {
                 primary = "false";
             }
-            
+
             metadataProcessor.writeColumna(database, nombreTabla, columna.getContent(), columna.getType(),
                     nullability, primary);
 
         }
     }
-    
-    public void addTable(  String database, String tableName){
-        
-       StoredDataManager temp= new StoredDataManager();
+
+    /**
+     * 
+     * @param database
+     * @param tableName 
+     */
+    public void addTable(String database, String tableName) {
+
+        StoredDataManager temp = new StoredDataManager();
         temp.initStoredDataManager(database);
-       temp.createTableFile( tableName );
+        temp.createTableFile(tableName);
     }
 
 }
