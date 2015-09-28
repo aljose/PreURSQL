@@ -7,9 +7,11 @@ package DatabaseRuntimeProcessor;
  */
 
 import Shared.Structures.Field;
+import Shared.Structures.Metadata;
 import Shared.Structures.Row;
 import Shared.Structures.Table;
 import StoredDataManager.Main.StoredDataManager;
+import SystemCatalog.Constants;
 import java.util.ArrayList;
 import SystemCatalog.FetchMetadata;
 import SystemCatalog.WriteMetadata;
@@ -22,14 +24,11 @@ public class DropDatabase {
 
     public void dropDatabase(String dataBase) {
 
-        FetchMetadata schemas = new FetchMetadata();
-        Table dataBaseSchemas = schemas.fetchSchemas();
-
-//        if (verifyExist(dataBaseSchemas, dataBase)) {
-//            System.out.println("No se puede eliminar la base de datos ya que no existe la base de datos");
-//            return;
-//        }
-       // deleteMetadata(dataBase);
+        if (!verifyExist(dataBase)) {
+            System.out.println("No se puede eliminar la base de datos ya que no existe la base de datos");
+            return;
+        }
+        deleteMetadata(dataBase);
         deleteSchema(dataBase);
     }
 
@@ -40,22 +39,23 @@ public class DropDatabase {
      * @param dataBase
      * @return
      */
-    private boolean verifyExist(Table dataBaseSchemas, String dataBase) {
+    private boolean verifyExist(String dataBase) {
 
-        ArrayList<Row> filas = dataBaseSchemas.getRows();
+        StoredDataManager storer = new StoredDataManager();
+        Metadata meta = storer.deserealizateMetadata();
 
-        //return filas.stream().map((fila) -> fila.getColumns()).noneMatch((campos) -> (!campos.stream().noneMatch((campo)  -> (campo.getContent().equals(dataBase)))));
-        for (Row fila : filas) {
+        ArrayList<ArrayList<String>> metadata = meta.getMetadata().get(Constants.SCHEMA);
 
-            ArrayList<Field> campos = fila.getColumns();
-            for (Field campo : campos) {
+        for (ArrayList<String> fila : metadata) {
 
-                if (campo.getContent().equals(dataBase)) {
-                    return false;
+            for (String campo : fila) {
+
+                if (campo.equals(dataBase)) {
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -66,69 +66,67 @@ public class DropDatabase {
      */
     private void deleteMetadata(String databaseName) {
 
-        WriteMetadata deleter = new WriteMetadata();
-        deleter.deleteEsquema(databaseName);
+        StoredDataManager storer = new StoredDataManager();
+        Metadata meta = storer.deserealizateMetadata();
 
-        FetchMetadata fetcher = new FetchMetadata();
-        Table tablas = fetcher.fetchTables();
-        Table columnas = fetcher.fetchColumns();
-        Table foreignkeys = fetcher.fetchForeignKey();
+        ArrayList<ArrayList<String>> tablaEsquema = meta.getMetadata().get(Constants.SCHEMA);
 
-        ArrayList<Row> filas = tablas.getRows();
+        for (int i = 0; i < tablaEsquema.size(); i++) {
 
-        for (int i = 0; i < filas.size(); i++) {
+            ArrayList<String> fila = tablaEsquema.get(i);
 
-            Row fila = filas.get(i);
-            ArrayList<Field> campos = fila.getColumns();
-            Field campo = campos.get(0);
+            if (fila.get(Constants.SCHEMA_SCHNAME).equals(databaseName)) {
 
-            if (campo.getContent().equals(databaseName)) {
+                meta.getMetadata().get(Constants.SCHEMA).get(Constants.SCHEMA_SCHNAME).remove(i);
+            }
+        }
+        ArrayList<ArrayList<String>> tablaTabla = meta.getMetadata().get(Constants.TABLES);
 
-                String nombreTabla = campos.get(1).getContent();
-                deleter.deleteTabla(databaseName, nombreTabla);
+        for (int i = 0; i < tablaTabla.size(); i++) {
+
+            ArrayList<String> fila = tablaTabla.get(i);
+
+            if (fila.get(Constants.TABLE_SCHNAME).equals(databaseName)) {
+
+                meta.getMetadata().get(Constants.TABLES).get(Constants.TABLE_SCHNAME).remove(i);
+            }
+        }
+        ArrayList<ArrayList<String>> tablaCol = meta.getMetadata().get(Constants.COLUMNS);
+
+        for (int i = 0; i < tablaCol.size(); i++) {
+
+            ArrayList<String> fila = tablaCol.get(i);
+
+            if (fila.get(Constants.COLUMNS_SCHNAME).equals(databaseName)) {
+
+                meta.getMetadata().get(Constants.COLUMNS).get(Constants.COLUMNS_SCHNAME).remove(i);
             }
         }
 
-        ArrayList<Row> filasColumnas = columnas.getRows();
-        // Elimina las columnas asociadas
-        for (int i = 0; i < filasColumnas.size(); i++) {
+        ArrayList<ArrayList<String>> tablaFor = meta.getMetadata().get(Constants.FOREIGNKEY);
 
-            Row fila = filasColumnas.get(i);
-            ArrayList<Field> campos = fila.getColumns();
-            Field campo = campos.get(0);
+        for (int i = 0; i < tablaFor.size(); i++) {
 
-            if (campo.getContent().equals(databaseName)) {
+            ArrayList<String> fila = tablaFor.get(i);
 
-                String nombreTabla = campos.get(1).getContent();
-                String nombreColumna = campos.get(2).getContent();
-                
-                deleter.deleteColumna(nombreColumna, nombreTabla, databaseName);
+            if (fila.get(Constants.FK_SCHNAME).equals(databaseName)) {
+
+                meta.getMetadata().get(Constants.FOREIGNKEY).get(Constants.FK_SCHNAME).remove(i);
             }
         }
-        ArrayList<Row> filasForeanea = foreignkeys.getRows();
-        // Elimina las llaves foraneas asociadas
-        for (int i = 0; i < filasForeanea.size(); i++) {
 
-            Row fila = filasForeanea.get(i);
-            ArrayList<Field> campos = fila.getColumns();
-            Field campo = campos.get(4);
-
-            if (campo.getContent().equals(databaseName)) {
-
-                deleter.deleteForeignKey(databaseName);
-            }
-        }
     }
 
     /**
-     *  Elimina un esquema de disco.
-     * @param dataBase 
+     * Elimina un esquema de disco.
+     *
+     * @param dataBase
      */
     private void deleteSchema(String dataBase) {
 
         StoredDataManager temp = new StoredDataManager();
         temp.dropDatabase(dataBase);
-        
+
     }
 
 }

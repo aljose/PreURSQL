@@ -1,18 +1,16 @@
-package DatabaseRuntimeProcessor;/*
- * Esta clase de DatabaseRuntimeProcessor.CreateDatabase se encarga de crear un esquema  (base de datos) al hacer esto
- * se agrega el esquema nuevo.
+package DatabaseRuntimeProcessor;
+
+/*
+ * Esta clase de DatabaseRuntimeProcessor.CreateDatabase se encarga de crear un esquema  (base de datos) 
+ * al hacer esto se agrega el esquema nuevo.
  * Este se agrega a la metadata del urSQL y tambien se crea una carpeta en el sistema de archivos donde se 
  * agregaran las tablas. 
  *
  */
-
 import java.util.ArrayList;
-import Shared.Structures.Table;
-import SystemCatalog.FetchMetadata;
-import SystemCatalog.WriteMetadata;
-import Shared.Structures.Row;
-import Shared.Structures.Field;
+import Shared.Structures.Metadata;
 import StoredDataManager.Main.StoredDataManager;
+import SystemCatalog.Constants;
 
 /**
  *
@@ -22,13 +20,10 @@ public class CreateDatabase {
 
     public void createDatabase(String dataBase) {
 
-        FetchMetadata schemas = new FetchMetadata();
-      //  Table dataBaseSchemas = schemas.fetchSchemas();
-
-//        if (!verifyExist(dataBaseSchemas, dataBase)) {
-//            System.out.println("No se puede crear la base de datos");
-//            return;
-//        }
+        if (!verifyExist(dataBase)) {
+            System.out.println("No se puede crear la base de datos");
+            return;
+        }
         addMetadata(dataBase);
         addSchema(dataBase);
     }
@@ -40,20 +35,18 @@ public class CreateDatabase {
      * @param dataBase
      * @return
      */
-    private boolean verifyExist(Table dataBaseSchemas, String dataBase) {
+    private boolean verifyExist(String dataBase) {
 
-        System.out.println("entro");
-        
-        ArrayList<Row> filas = dataBaseSchemas.getRows();
+        StoredDataManager storer = new StoredDataManager();
+        Metadata meta = storer.deserealizateMetadata();
 
-        //return filas.stream().map((fila) -> fila.getColumns()).noneMatch((campos) -> (!campos.stream().noneMatch((campo) -> ( campo.getContent().equals(dataBase)))));
-        
-                for (Row fila : filas) {
+        ArrayList<ArrayList<String>> metadata = meta.getMetadata().get(Constants.SCHEMA);
 
-            ArrayList<Field> campos = fila.getColumns();
-            for ( Field campo : campos ) {
+        for (ArrayList<String> fila : metadata) {
 
-                if ( campo.getContent().equals(dataBase)){
+            for (String campo : fila) {
+
+                if (campo.equals(dataBase)) {
                     return false;
                 }
             }
@@ -68,16 +61,26 @@ public class CreateDatabase {
      */
     private void addMetadata(String databaseName) {
 
-        WriteMetadata writer = new WriteMetadata();
+        StoredDataManager storer = new StoredDataManager();
+        Metadata meta = storer.deserealizateMetadata();
+        ArrayList<String> schemaTable = new ArrayList<>();
 
-        writer.writeEsquema(databaseName);
+        schemaTable.add(databaseName);
 
+        meta.getMetadata().get(Constants.SCHEMA).add(schemaTable);
+
+        ArrayList<ArrayList<ArrayList<String>>> metadata = meta.getMetadata();// variable donder se guarda al final
+        meta.setMetadata(metadata);
+        storer.serializeMetadata(meta);
     }
 
-    
+    /**
+     * Agrega el esquema nuevo.
+     *
+     * @param databaseName
+     */
     private void addSchema(String databaseName) {
 
-        
         StoredDataManager temp = new StoredDataManager();
         temp.createDatabase(databaseName);
     }

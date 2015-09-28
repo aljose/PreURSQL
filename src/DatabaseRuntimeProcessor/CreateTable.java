@@ -1,15 +1,16 @@
-package DatabaseRuntimeProcessor;/*
+package DatabaseRuntimeProcessor;
+
+/*
  * Create Table
  * Esta clase crea una nueva tabla y con ello crea nuevas columnas, llave primaria y llave foranea.
  * Al hacer esto se debe guardar tanto en disco como en la metadata de urSQL.
  */
-
-
 import Shared.Structures.Field;
+import Shared.Structures.Metadata;
 import Shared.Structures.Row;
 import StoredDataManager.Main.StoredDataManager;
+import SystemCatalog.Constants;
 import java.util.ArrayList;
-import SystemCatalog.WriteMetadata;
 
 /**
  *
@@ -17,10 +18,47 @@ import SystemCatalog.WriteMetadata;
  */
 public class CreateTable {
 
+    /**
+     *
+     * @param database
+     * @param nombreTabla
+     * @param columns
+     */
     public void createTable(String database, String nombreTabla, Row columns) {
+
+        if (!verify(database, nombreTabla)) {
+            return;
+        }
 
         addMetadata(database, nombreTabla, columns);
         addTable(database, nombreTabla);
+
+    }
+
+    /**
+     * revisa que la tabla no exista.
+     *
+     * @param database
+     * @param nombreTabla
+     * @return
+     */
+    private boolean verify(String database, String nombreTabla) {
+
+        StoredDataManager storer = new StoredDataManager();
+        Metadata meta = storer.deserealizateMetadata();
+
+        ArrayList<ArrayList<String>> metadata = meta.getMetadata().get(Constants.TABLES);
+
+        for (ArrayList<String> fila : metadata) {
+
+            if (fila.get(Constants.TABLE_TABNAME).equals(nombreTabla)
+                    && fila.get(Constants.TABLE_SCHNAME).equals(database)) {
+
+                return false;
+            }
+        }
+        return true;
+
     }
 
     /**
@@ -31,42 +69,32 @@ public class CreateTable {
      * @param nombreTabla
      * @param columns
      */
-    public void addMetadata(String database, String nombreTabla, Row columns) {
+    private void addMetadata(String database, String nombreTabla, Row columns) {
 
-        WriteMetadata metadataProcessor = new WriteMetadata();
-        metadataProcessor.writeTabla(database, nombreTabla);
+        StoredDataManager storer = new StoredDataManager();
+        Metadata meta = storer.deserealizateMetadata();
 
-        ArrayList<Field> columnas = columns.getColumns();         //Revisar might cause isssues and bugs.
-        for (Field columna : columnas) {
+        ArrayList<Field> fields = columns.getColumns();
+        Field primerCampo = fields.get(0); //llave primaria
 
-            String nullability = null;
-            if (columna.getIsNull() == true) {
+        ArrayList<String> filaInsertar = new ArrayList<>();
+        filaInsertar.add(database);
+        filaInsertar.add(nombreTabla);
+        filaInsertar.add(primerCampo.getContent());
 
-                nullability = "null";
-            } else {
+        meta.getMetadata().get(Constants.TABLES).add(filaInsertar);
 
-                nullability = "notnull";
-            }
-            String primary = null;
-            if (columna.isPrimaryKey()) {
-
-                primary = "true";
-            } else {
-                primary = "false";
-            }
-
-            metadataProcessor.writeColumna(database, nombreTabla, columna.getContent(), columna.getType(),
-                    nullability, primary);
-
-        }
+        ArrayList<ArrayList<ArrayList<String>>> metadata = meta.getMetadata();// variable donder se guarda al final
+        meta.setMetadata(metadata);
+        storer.serializeMetadata(meta);
     }
 
     /**
-     * 
+     *
      * @param database
-     * @param tableName 
+     * @param tableName
      */
-    public void addTable(String database, String tableName) {
+    private void addTable(String database, String tableName) {
 
         StoredDataManager temp = new StoredDataManager();
         temp.initStoredDataManager(database);

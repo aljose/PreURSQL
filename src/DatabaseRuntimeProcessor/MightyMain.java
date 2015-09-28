@@ -1,10 +1,10 @@
-package DatabaseRuntimeProcessor;/*
+package DatabaseRuntimeProcessor;
+
+/*
  *               MightyMain 
  *     Clase inicializa y recibe las instrucciones del usuario ejecuta los analisis y retorna los 
  *     outputs. 
  */
-
-
 import Analysis.LexicalAnalysis;
 import GUI.GUI;
 import Shared.Structures.Field;
@@ -41,6 +41,7 @@ public class MightyMain {
         String instruction0 = instruccion.get(0);
         StoredDataManager storer = new StoredDataManager();
         Metadata meta = storer.deserealizateMetadata();
+        ArrayList<ArrayList<ArrayList<String>>> metadata = meta.getMetadata();// variable donder se guarda al final
         ArrayList<String> queryColumns = new ArrayList<>();
 
         switch (instruction0) {
@@ -57,6 +58,10 @@ public class MightyMain {
                     queryColumns.add(instruccion.get(4));
                     queryColumns.add("createIndex");
                     meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
+
+                    meta.setMetadata(metadata);
+                    storer.serializeMetadata(meta);
+
                     break;
 
                 } else if (instruccion.get(1).equals("database")) {
@@ -65,10 +70,13 @@ public class MightyMain {
                     temp.createDatabase(instruccion.get(2));
                     PlanEjecucion plan = new PlanEjecucion("createDatabase", instruccion);
 
-                    queryColumns.add(databaseName);
                     queryColumns.add(instruccion.get(2));
+                    queryColumns.add(" ");
                     queryColumns.add("createDatabase");
                     meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
+
+                    meta.setMetadata(metadata);
+                    storer.serializeMetadata(meta);
                     break;
 
                 } else if (instruccion.get(1).equals("table")) {
@@ -157,6 +165,9 @@ public class MightyMain {
                     queryColumns.add(instruccion.get(2));
                     queryColumns.add("createTable");
                     meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
+
+                    meta.setMetadata(metadata);
+                    storer.serializeMetadata(meta);
                     break;
 
                 }
@@ -171,6 +182,9 @@ public class MightyMain {
                     queryColumns.add(instruccion.get(2));
                     queryColumns.add("dropTable");
                     meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
+
+                    meta.setMetadata(metadata);
+                    storer.serializeMetadata(meta);
                     break;
 
                 } else {
@@ -179,9 +193,12 @@ public class MightyMain {
                     PlanEjecucion plan = new PlanEjecucion("dropDatabase", instruccion);
 
                     queryColumns.add(databaseName);
-                    queryColumns.add(instruccion.get(2));
+                    queryColumns.add(" ");
                     queryColumns.add("dropDatabase");
                     meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
+
+                    meta.setMetadata(metadata);
+                    storer.serializeMetadata(meta);
                     break;
                 }
 
@@ -193,17 +210,41 @@ public class MightyMain {
                 ListDatabases lister = new ListDatabases();
                 lister.listDatabases();
                 PlanEjecucion plan = new PlanEjecucion("listDatabases", instruccion);
+
+                queryColumns.add(" ");
+                queryColumns.add(" ");
+                queryColumns.add("listDatabases");
+                meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
+
+                meta.setMetadata(metadata);
+                storer.serializeMetadata(meta);
                 break;
 
             case "display":
                 DisplayDatabase display = new DisplayDatabase();
                 display.displayDatabase(databaseName);
                 PlanEjecucion planDD = new PlanEjecucion("displayDatabase", instruccion);
+
+                queryColumns.add(" ");
+                queryColumns.add(" ");
+                queryColumns.add("displayDatabases");
+                meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
+
+                meta.setMetadata(metadata);
+                storer.serializeMetadata(meta);
                 break;
 
             case "set":
                 this.databaseName = instruccion.get(2);
                 PlanEjecucion planSD = new PlanEjecucion("set", instruccion);
+
+                queryColumns.add(databaseName);
+                queryColumns.add(" ");
+                queryColumns.add("setDatabase");
+                meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
+
+                meta.setMetadata(metadata);
+                storer.serializeMetadata(meta);
                 break;
 
             case "alter":
@@ -211,6 +252,13 @@ public class MightyMain {
                 alter.alterTable(databaseName, instruccion.get(2), instruccion.get(8), instruccion.get(11), instruccion.get(13));
                 PlanEjecucion planAT = new PlanEjecucion("createTable", instruccion);
 
+                queryColumns.add(databaseName);
+                queryColumns.add(instruccion.get(2));
+                queryColumns.add("alterTable");
+                meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
+
+                meta.setMetadata(metadata);
+                storer.serializeMetadata(meta);
                 break;
 
             case "select":
@@ -254,6 +302,15 @@ public class MightyMain {
                 }
                 InsertInto ins = new InsertInto();
                 ins.executeInsertion(instruccion.get(2), cols, valores, databaseName);
+
+                queryColumns.add(databaseName);
+                queryColumns.add(instruccion.get(2));
+                queryColumns.add("insertInto");
+                meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
+
+                meta.setMetadata(metadata);
+                storer.serializeMetadata(meta);
+
         }
     }
 }
