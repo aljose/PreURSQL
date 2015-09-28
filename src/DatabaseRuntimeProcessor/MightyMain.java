@@ -12,7 +12,7 @@ import Shared.Structures.Metadata;
 import Shared.Structures.Row;
 import StoredDataManager.Main.StoredDataManager;
 import SystemCatalog.Constants;
-
+import SystemCatalog.CreateMetadata;
 import java.util.ArrayList;
 
 /**
@@ -38,6 +38,9 @@ public class MightyMain {
 
     public void processer(ArrayList<String> instruccion) {
 
+        CreateMetadata createMeta = new CreateMetadata();
+        createMeta.buildSystemCatalog();
+        
         String instruction0 = instruccion.get(0);
         StoredDataManager storer = new StoredDataManager();
         Metadata meta = storer.deserealizateMetadata();
