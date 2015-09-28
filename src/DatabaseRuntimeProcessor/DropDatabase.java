@@ -114,6 +114,9 @@ public class DropDatabase {
                 meta.getMetadata().get(Constants.FOREIGNKEY).get(Constants.FK_SCHNAME).remove(i);
             }
         }
+        ArrayList<ArrayList<ArrayList<String>>> metadata = meta.getMetadata();// variable donder se guarda al final
+        meta.setMetadata(metadata);
+        storer.serializeMetadata(meta);
 
     }
 

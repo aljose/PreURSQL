@@ -80,7 +80,7 @@ MightyMain mm = new MightyMain();
                 }
 
                 if (!isNumeric(instruction.get(2))) {
-                       mm.processer(instruction, instruction.get(2));
+                      mm.processer(instruction);
                     return true;
                 }
                 return false;
@@ -166,7 +166,7 @@ MightyMain mm = new MightyMain();
         String token1 = instruction.get(1);
         if (token1.equalsIgnoreCase("table") || token1.equalsIgnoreCase("database")) {
                 
-               mm.processer(instruction, instruction.get(2));
+              mm.processer(instruction);
          
             return !isNumeric(instruction.get(2));
 
