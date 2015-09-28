@@ -5,7 +5,6 @@ package DatabaseRuntimeProcessor;
  *     Clase inicializa y recibe las instrucciones del usuario ejecuta los analisis y retorna los 
  *     outputs. 
  */
-import Analysis.LexicalAnalysis;
 import GUI.GUI;
 import Shared.Structures.Field;
 import Shared.Structures.Metadata;
@@ -31,18 +30,18 @@ public class MightyMain {
     public static void main(String[] args) {
 
         GUI guiInstance = new GUI();
-        LexicalAnalysis lex = new LexicalAnalysis();
-        ArrayList<String> instructionSet = lex.tokenize(null);
-
+        
+        guiInstance.setVisible(true);
+        
     }
 
-    public void processer(ArrayList<String> instruccion) {
+    private void processer(ArrayList<String> instruccion, StoredDataManager storer) {
 
         CreateMetadata createMeta = new CreateMetadata();
         createMeta.buildSystemCatalog();
         
         String instruction0 = instruccion.get(0);
-        StoredDataManager storer = new StoredDataManager();
+   //     StoredDataManager storer = new StoredDataManager();
         Metadata meta = storer.deserealizateMetadata();
         ArrayList<ArrayList<ArrayList<String>>> metadata = meta.getMetadata();// variable donder se guarda al final
         ArrayList<String> queryColumns = new ArrayList<>();
@@ -77,7 +76,7 @@ public class MightyMain {
                     queryColumns.add(" ");
                     queryColumns.add("createDatabase");
                     meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
-
+                 //   storer.initStoredDataManager(databaseName);
                     meta.setMetadata(metadata);
                     storer.serializeMetadata(meta);
                     break;
@@ -161,6 +160,7 @@ public class MightyMain {
                         columnas.add(campo);
                     }
                     Row columnas1 = new Row(columnas);
+       //             storer.initStoredDataManager("rt");
                     createTab.createTable(databaseName, instruccion.get(2), columnas1);
                     PlanEjecucion plan = new PlanEjecucion("createTable", instruccion);
 
@@ -240,12 +240,14 @@ public class MightyMain {
             case "set":
                 this.databaseName = instruccion.get(2);
                 PlanEjecucion planSD = new PlanEjecucion("set", instruccion);
-
+                System.out.println("hjgfyfcg");
                 queryColumns.add(databaseName);
                 queryColumns.add(" ");
                 queryColumns.add("setDatabase");
                 meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
 
+                storer.initStoredDataManager(databaseName);
+                System.out.println("lolo");
                 meta.setMetadata(metadata);
                 storer.serializeMetadata(meta);
                 break;
