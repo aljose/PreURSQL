@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * @author Nicolas Jimenez
  */
 public class MightyMain {
-    
+
     private String databaseName;
 
     /**
@@ -34,38 +34,41 @@ public class MightyMain {
         LexicalAnalysis lex = new LexicalAnalysis();
         ArrayList<String> instructionSet = lex.tokenize(null);
 
-        
     }
 
     public void processer(ArrayList<String> instruccion) {
 
         String instruction0 = instruccion.get(0);
+        StoredDataManager storer = new StoredDataManager();
+        Metadata meta = storer.deserealizateMetadata();
+        ArrayList<String> queryColumns = new ArrayList<>();
 
         switch (instruction0) {
-           
+
             case "create":
-                
+
                 if (instruccion.get(1).equals("index")) {
-                    
+
                     String nombreIndice = instruccion.get(2);
                     String tabla = instruccion.get(4);
                     String columna = instruccion.get(6);
-                    
-                   StoredDataManager stored = new StoredDataManager();
-                   break;
-                }
 
-                else if (instruccion.get(1).equals("database")) {
+                    queryColumns.add(databaseName);
+                    queryColumns.add(instruccion.get(4));
+                    queryColumns.add("createIndex");
+                    meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
+                    break;
+
+                } else if (instruccion.get(1).equals("database")) {
 
                     CreateDatabase temp = new CreateDatabase();
                     temp.createDatabase(instruccion.get(2));
                     PlanEjecucion plan = new PlanEjecucion("createDatabase", instruccion);
-                    
-                    StoredDataManager storer = new StoredDataManager();
-                    
-                    Metadata meta = storer.deserealizateMetadata();
-      //             Constants.Q
-                    meta.getMetadata().get(Constants.QUERYLOG ).add(new ArrayList()); 
+
+                    queryColumns.add(databaseName);
+                    queryColumns.add(instruccion.get(2));
+                    queryColumns.add("createDatabase");
+                    meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
                     break;
 
                 } else if (instruccion.get(1).equals("table")) {
@@ -149,22 +152,36 @@ public class MightyMain {
                     Row columnas1 = new Row(columnas);
                     createTab.createTable(databaseName, instruccion.get(2), columnas1);
                     PlanEjecucion plan = new PlanEjecucion("createTable", instruccion);
+
+                    queryColumns.add(databaseName);
+                    queryColumns.add(instruccion.get(2));
+                    queryColumns.add("createTable");
+                    meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
                     break;
 
-                } 
+                }
             case "drop":
 
                 if (instruccion.get(1).equals("table")) {
                     DropTable dropTab = new DropTable();
                     dropTab.dropTable(databaseName, instruccion.get(2));
                     PlanEjecucion plan = new PlanEjecucion("dropTable", instruccion);
-                    plan.procesar();
+
+                    queryColumns.add(databaseName);
+                    queryColumns.add(instruccion.get(2));
+                    queryColumns.add("dropTable");
+                    meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
                     break;
 
                 } else {
                     DropDatabase dropData = new DropDatabase();
                     dropData.dropDatabase(databaseName);
                     PlanEjecucion plan = new PlanEjecucion("dropDatabase", instruccion);
+
+                    queryColumns.add(databaseName);
+                    queryColumns.add(instruccion.get(2));
+                    queryColumns.add("dropDatabase");
+                    meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
                     break;
                 }
 
@@ -240,5 +257,3 @@ public class MightyMain {
         }
     }
 }
-
-
