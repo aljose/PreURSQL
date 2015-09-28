@@ -145,25 +145,25 @@ public class DisplayDatabase {
                 }
             }
         }
-/*
-        for (int j = 0; j < columnTable.getRows().get(i).getColumns().size(); j++) { //Cantidad elementos de una fila
-            Field element = columnTable.getRows().get(i).getColumns().get(j); //Elemento
-            if (element.getSchemaName().equals(schemaName)
-                    && element.getTableName().equals(tablesName.get(k))) {
-                result.append(element.getContent());
-                result.append(" ");
-                result.append(element.getType());
-                result.append(" ");
-                result.append(element.getIsNull());
-                result.append(" ");
-                result.append(element.isPrimaryKey());
-                result.append(" \n");
-            }
-        }
+        /*
+         for (int j = 0; j < columnTable.getRows().get(i).getColumns().size(); j++) { //Cantidad elementos de una fila
+         Field element = columnTable.getRows().get(i).getColumns().get(j); //Elemento
+         if (element.getSchemaName().equals(schemaName)
+         && element.getTableName().equals(tablesName.get(k))) {
+         result.append(element.getContent());
+         result.append(" ");
+         result.append(element.getType());
+         result.append(" ");
+         result.append(element.getIsNull());
+         result.append(" ");
+         result.append(element.isPrimaryKey());
+         result.append(" \n");
+         }
+         }
 
-    }
+         }
 
-}*/
-return result.toString();
+         }*/
+        return result.toString();
     }
 }
