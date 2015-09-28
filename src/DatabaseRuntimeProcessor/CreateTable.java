@@ -81,7 +81,8 @@ public class CreateTable {
         filaInsertar.add(database);
         filaInsertar.add(nombreTabla);
         filaInsertar.add(primerCampo.getContent());
-
+       filaInsertar.add("false");
+       
         meta.getMetadata().get(Constants.TABLES).add(filaInsertar);
 
         ArrayList<ArrayList<ArrayList<String>>> metadata = meta.getMetadata();// variable donder se guarda al final

@@ -86,7 +86,8 @@ MightyMain mm = new MightyMain();
                 return false;
 
             } else if (token1.equalsIgnoreCase("table")) {
-
+                System.out.println("instruccccccc");
+                mm.processer(instruction);
                 return createTable(instruction, instructionSize);
 
             } else if (token1.equalsIgnoreCase("index")) {
@@ -123,6 +124,8 @@ MightyMain mm = new MightyMain();
             if (token1.equalsIgnoreCase("database") && instructionSize == 3) {
 
                 if (!isNumeric(instruction.get(2))) {
+                    System.out.println("asdadsas");
+                    mm.processer(instruction);
                     return true;
                 }
             }

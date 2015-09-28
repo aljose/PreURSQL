@@ -77,7 +77,7 @@ public class DropDatabase {
 
             if (fila.get(Constants.SCHEMA_SCHNAME).equals(databaseName)) {
 
-                meta.getMetadata().get(Constants.SCHEMA).get(Constants.SCHEMA_SCHNAME).remove(i);
+                meta.getMetadata().get(Constants.SCHEMA).remove(i);
             }
         }
         ArrayList<ArrayList<String>> tablaTabla = meta.getMetadata().get(Constants.TABLES);
@@ -88,7 +88,7 @@ public class DropDatabase {
 
             if (fila.get(Constants.TABLE_SCHNAME).equals(databaseName)) {
 
-                meta.getMetadata().get(Constants.TABLES).get(Constants.TABLE_SCHNAME).remove(i);
+                meta.getMetadata().get(Constants.TABLES).remove(i);
             }
         }
         ArrayList<ArrayList<String>> tablaCol = meta.getMetadata().get(Constants.COLUMNS);
@@ -99,7 +99,7 @@ public class DropDatabase {
 
             if (fila.get(Constants.COLUMNS_SCHNAME).equals(databaseName)) {
 
-                meta.getMetadata().get(Constants.COLUMNS).get(Constants.COLUMNS_SCHNAME).remove(i);
+                meta.getMetadata().get(Constants.COLUMNS).remove(i);
             }
         }
 
@@ -111,7 +111,7 @@ public class DropDatabase {
 
             if (fila.get(Constants.FK_SCHNAME).equals(databaseName)) {
 
-                meta.getMetadata().get(Constants.FOREIGNKEY).get(Constants.FK_SCHNAME).remove(i);
+                meta.getMetadata().get(Constants.FOREIGNKEY).remove(i);
             }
         }
         ArrayList<ArrayList<ArrayList<String>>> metadata = meta.getMetadata();// variable donder se guarda al final
