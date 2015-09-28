@@ -1,10 +1,12 @@
 package DatabaseRuntimeProcessor;
 
 import Shared.Structures.Field;
+import Shared.Structures.Metadata;
 import Shared.Structures.Row;
 import Shared.Structures.Table;
+import StoredDataManager.Main.StoredDataManager;
+import SystemCatalog.Constants;
 import java.util.ArrayList;
-import SystemCatalog.FetchMetadata;
 
 /**
  * Clase encargada de hacer el comando DatabaseRuntimeProcessor.DisplayDatabase.
@@ -13,8 +15,9 @@ import SystemCatalog.FetchMetadata;
  */
 public class DisplayDatabase {
 
-    FetchMetadata metadata = new FetchMetadata();
+    StoredDataManager dataManager;
 
+   // FetchMetadata metadata = new FetchMetadata();
     /**
      *
      * @param schemaName
@@ -38,14 +41,18 @@ public class DisplayDatabase {
         return resultToPrint1;
     }
 
+    /**/
     private boolean verifyExistence(String schemaName) {
-        Table schemaTable = metadata.fetchSchemas();
-        int length = schemaTable.getLength();
-        Field element;
+        Metadata metadata = new Metadata();
+        metadata = dataManager.deserealizateMetadata();
+        ArrayList<ArrayList<ArrayList<String>>> met = metadata.getMetadata();
+        ArrayList<String> row;
+        String element;
         boolean result = false;
-        for (int i = 1; i < length; i++) {
-            element = schemaTable.getRows().get(i).getColumns().get(0);
-            if (element.getContent().equals(schemaName)) {
+        for (int i = 1; i < met.get(Constants.SCHEMA).size(); i++) {
+            row = met.get(Constants.SCHEMA).get(Constants.SCHEMA_SCHNAME);
+            element = row.get(i);
+            if (element.equals(schemaName)) {
                 result = true;
                 break;
             } else {

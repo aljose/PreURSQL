@@ -1,5 +1,6 @@
 package SystemCatalog;
 
+import Shared.Structures.Metadata;
 import StoredDataManager.Main.StoredDataManager;
 import java.util.ArrayList;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
  */
 public class CreateMetadata {
 
-    ArrayList<ArrayList<ArrayList<String>>> Metadata = new ArrayList<ArrayList<ArrayList<String>>>();
+    ArrayList<ArrayList<ArrayList<String>>> metadata = new ArrayList<ArrayList<ArrayList<String>>>();
 
     public void buildSystemCatalog() {
         //Definición del nombre del catálogo del sistema.   
@@ -78,11 +79,13 @@ public class CreateMetadata {
         foreignKeyColumns.add(foreignFifthCol);
 
         StoredDataManager storedDataManager = new StoredDataManager();
-        Metadata.get(Constants.SCHEMA).add(schemaColumns);
-        Metadata.get(Constants.TABLES).add(tableColumns);
-        Metadata.get(Constants.COLUMNS).add(columnColumns);
-        Metadata.get(Constants.QUERYLOG).add(queryColumns);
-        Metadata.get(Constants.FOREIGNKEY).add(foreignKeyColumns);
+        metadata.get(Constants.SCHEMA).add(schemaColumns);
+        metadata.get(Constants.TABLES).add(tableColumns);
+        metadata.get(Constants.COLUMNS).add(columnColumns);
+        metadata.get(Constants.QUERYLOG).add(queryColumns);
+        metadata.get(Constants.FOREIGNKEY).add(foreignKeyColumns);
+        Metadata met = new Metadata(metadata);
+        storedDataManager.serializeMetadata(met);
 
         //Serialización del objeto árbol para almacenarlo en disco.
         /*
