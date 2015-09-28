@@ -1,10 +1,8 @@
 package Analysis;
 
-import DatabaseRuntimeProcessor.CreateDatabase;
-import DatabaseRuntimeProcessor.CreateTable;
+
 import DatabaseRuntimeProcessor.MightyMain;
-import Shared.Structures.Field;
-import Shared.Structures.Row;
+
 import java.util.ArrayList;
 
 /**
@@ -13,8 +11,8 @@ import java.util.ArrayList;
  * @author nicolasjimenez
  */
 public class Parser {
-MightyMain mm = new MightyMain();
-    private final ArrayList<String> comparators;
+
+private final ArrayList<String> comparators;
     private final ArrayList<String> aggregate;
 
     /**
@@ -40,12 +38,12 @@ MightyMain mm = new MightyMain();
      * Llama a whatOperation para realizar el analisis.
      *
      * @param instruction
-     * @param databaseName
      * @return
      */
     public boolean parse(ArrayList<String> instruction) {
 
         return whatOperation(instruction);
+
     }
 
     /**
@@ -80,14 +78,11 @@ MightyMain mm = new MightyMain();
                 }
 
                 if (!isNumeric(instruction.get(2))) {
-                      mm.processer(instruction);
                     return true;
                 }
                 return false;
 
             } else if (token1.equalsIgnoreCase("table")) {
-                System.out.println("instruccccccc");
-                mm.processer(instruction);
                 return createTable(instruction, instructionSize);
 
             } else if (token1.equalsIgnoreCase("index")) {
@@ -124,8 +119,6 @@ MightyMain mm = new MightyMain();
             if (token1.equalsIgnoreCase("database") && instructionSize == 3) {
 
                 if (!isNumeric(instruction.get(2))) {
-                    System.out.println("asdadsas");
-                    mm.processer(instruction);
                     return true;
                 }
             }
@@ -168,9 +161,8 @@ MightyMain mm = new MightyMain();
         }
         String token1 = instruction.get(1);
         if (token1.equalsIgnoreCase("table") || token1.equalsIgnoreCase("database")) {
-                
-              mm.processer(instruction);
-         
+
+
             return !isNumeric(instruction.get(2));
 
         } else {

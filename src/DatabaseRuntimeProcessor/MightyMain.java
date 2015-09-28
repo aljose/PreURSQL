@@ -13,6 +13,7 @@ import StoredDataManager.Main.StoredDataManager;
 import SystemCatalog.Constants;
 import SystemCatalog.CreateMetadata;
 import java.util.ArrayList;
+import Analysis.Parser;
 
 /**
  *
@@ -29,19 +30,19 @@ public class MightyMain {
      */
     public static void main(String[] args) {
 
+        StoredDataManager storer = new StoredDataManager();
+
         GUI guiInstance = new GUI();
-        
-        guiInstance.setVisible(true);
-        
+
+  //      processer();
     }
 
     private void processer(ArrayList<String> instruccion, StoredDataManager storer) {
 
         CreateMetadata createMeta = new CreateMetadata();
         createMeta.buildSystemCatalog();
-        
+
         String instruction0 = instruccion.get(0);
-   //     StoredDataManager storer = new StoredDataManager();
         Metadata meta = storer.deserealizateMetadata();
         ArrayList<ArrayList<ArrayList<String>>> metadata = meta.getMetadata();// variable donder se guarda al final
         ArrayList<String> queryColumns = new ArrayList<>();
@@ -61,6 +62,7 @@ public class MightyMain {
                     queryColumns.add("createIndex");
                     meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
 
+ 
                     meta.setMetadata(metadata);
                     storer.serializeMetadata(meta);
 
@@ -76,7 +78,7 @@ public class MightyMain {
                     queryColumns.add(" ");
                     queryColumns.add("createDatabase");
                     meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
-                 //   storer.initStoredDataManager(databaseName);
+                    storer.initStoredDataManager(databaseName);
                     meta.setMetadata(metadata);
                     storer.serializeMetadata(meta);
                     break;
@@ -160,7 +162,7 @@ public class MightyMain {
                         columnas.add(campo);
                     }
                     Row columnas1 = new Row(columnas);
-       //             storer.initStoredDataManager("rt");
+                    //             storer.initStoredDataManager("rt");
                     createTab.createTable(databaseName, instruccion.get(2), columnas1);
                     PlanEjecucion plan = new PlanEjecucion("createTable", instruccion);
 
@@ -192,7 +194,7 @@ public class MightyMain {
 
                 } else {
                     DropDatabase dropData = new DropDatabase();
-                    dropData.dropDatabase(databaseName);
+                    dropData.dropDatabase(instruccion.get(2));
                     PlanEjecucion plan = new PlanEjecucion("dropDatabase", instruccion);
 
                     queryColumns.add(databaseName);
@@ -200,6 +202,7 @@ public class MightyMain {
                     queryColumns.add("dropDatabase");
                     meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
 
+                    storer.initStoredDataManager(databaseName);
                     meta.setMetadata(metadata);
                     storer.serializeMetadata(meta);
                     break;
@@ -232,7 +235,7 @@ public class MightyMain {
                 queryColumns.add(" ");
                 queryColumns.add("displayDatabases");
                 meta.getMetadata().get(Constants.QUERYLOG).add(queryColumns);
-
+                
                 meta.setMetadata(metadata);
                 storer.serializeMetadata(meta);
                 break;
@@ -289,7 +292,7 @@ public class MightyMain {
                 ArrayList<String> valores = new ArrayList<>();
 
                 int i;
-                for (i = 4; instruccion.get(i).equals(")"); i++) {
+                for (i = 4; !instruccion.get(i).equals(")"); i++) {
 
                     String elementoActual = instruccion.get(i);
                     if (!elementoActual.equals(",") && !elementoActual.equals(")")) {
@@ -297,7 +300,7 @@ public class MightyMain {
                         cols.add(elementoActual);
                     }
                 }
-                for (i = i + 2; instruccion.get(i).equals(")"); i++) {
+                for (i = i + 3; !instruccion.get(i).equals(")"); i++) {
 
                     String elementoActual = instruccion.get(i);
                     if (!elementoActual.equals(",") && !elementoActual.equals(")")) {
