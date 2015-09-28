@@ -41,7 +41,6 @@ public class CreateMetadata {
         String tableFourthCol = "ForeignKey";
         tableColumns.add(tableFirstCol);
         tableColumns.add(tableSecondCol);
-        
         tableColumns.add(tableThirdCol);
         tableColumns.add(tableFourthCol);
 
