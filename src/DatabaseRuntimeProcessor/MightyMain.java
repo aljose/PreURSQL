@@ -37,11 +37,8 @@ public class MightyMain {
         }
     }
 
-<<<<<<< HEAD
+
     private void processer(ArrayList<String> instruccion) {
-=======
-    public void processer(ArrayList<String> instruccion, String databaseName) {
->>>>>>> origin/master
 
         String instruction0 = instruccion.get(0);
 
@@ -72,7 +69,7 @@ public class MightyMain {
                     Field campo = null;
                     ArrayList<Field> columnas = new ArrayList<>();
 
-                    while (!instruccion.get(i).equals("primary")) {
+                    while (!instruccion.get(i).equals(",")) {
 
                         if (i + 3 <= instruccion.size()) {
                             if (instruccion.get(i + 1).equals("integer") || instruccion.get(i + 1).equals("varchar") || instruccion.get(i + 1).
@@ -152,15 +149,11 @@ public class MightyMain {
             case "drop":
 
                 if (instruccion.get(1).equals("table")) {
-                    System.out.println("drop table");
+
                     PlanEjecucion plan = new PlanEjecucion("dropTable", instruccion);
                     DropTable dropTab = new DropTable();
                     dropTab.dropTable(databaseName, instruccion.get(2));
-<<<<<<< HEAD
-                    PlanEjecucion plan = new PlanEjecucion("dropTable", instruccion);
-                    plan.procesar();
-=======
->>>>>>> origin/master
+                    PlanEjecucion planD = new PlanEjecucion("dropTable", instruccion);
                     break;
 
                 } else {
@@ -243,6 +236,24 @@ public class MightyMain {
                 ins.executeInsertion(instruccion.get(2), cols, valores, databaseName);
         }
     }
+
+    /**
+     * 
+     * @return 
+     */
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    /**
+     * 
+     * @param databaseName 
+     */
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
+    
+    
 }
 
 
