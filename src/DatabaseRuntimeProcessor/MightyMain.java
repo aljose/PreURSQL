@@ -64,7 +64,7 @@ public class MightyMain {
                     StoredDataManager storer = new StoredDataManager();
                     
                     Metadata meta = storer.deserealizateMetadata();
-                   
+      //             Constants.Q
                     meta.getMetadata().get(Constants.QUERYLOG ).add(new ArrayList()); 
                     break;
 
