@@ -8,13 +8,16 @@ package DatabaseRuntimeProcessor;/*
 import Analysis.LexicalAnalysis;
 import GUI.GUI;
 import Shared.Structures.Field;
+import Shared.Structures.Metadata;
 import Shared.Structures.Row;
+import StoredDataManager.Main.StoredDataManager;
+import SystemCatalog.Constants;
 
 import java.util.ArrayList;
 
 /**
  *
- * @author nicolasjimenez
+ * @author Nicolas Jimenez
  */
 public class MightyMain {
     
@@ -28,23 +31,18 @@ public class MightyMain {
     public static void main(String[] args) {
 
         GUI guiInstance = new GUI();
-
         LexicalAnalysis lex = new LexicalAnalysis();
         ArrayList<String> instructionSet = lex.tokenize(null);
 
-        for (String instruccion : instructionSet) {
-
-        }
+        
     }
 
-    private void processer(ArrayList<String> instruccion) {
+    public void processer(ArrayList<String> instruccion) {
 
         String instruction0 = instruccion.get(0);
 
         switch (instruction0) {
-            
-            
-
+           
             case "create":
                 
                 if (instruccion.get(1).equals("index")) {
@@ -52,6 +50,9 @@ public class MightyMain {
                     String nombreIndice = instruccion.get(2);
                     String tabla = instruccion.get(4);
                     String columna = instruccion.get(6);
+                    
+                   StoredDataManager stored = new StoredDataManager();
+                   break;
                 }
 
                 else if (instruccion.get(1).equals("database")) {
@@ -59,6 +60,12 @@ public class MightyMain {
                     CreateDatabase temp = new CreateDatabase();
                     temp.createDatabase(instruccion.get(2));
                     PlanEjecucion plan = new PlanEjecucion("createDatabase", instruccion);
+                    
+                    StoredDataManager storer = new StoredDataManager();
+                    
+                    Metadata meta = storer.deserealizateMetadata();
+                   
+                    meta.getMetadata().get(Constants.QUERYLOG ).add(new ArrayList()); 
                     break;
 
                 } else if (instruccion.get(1).equals("table")) {
@@ -78,19 +85,19 @@ public class MightyMain {
 
                                     if (i == 5) {
                                         campo = new Field(instruccion.get(i), instruccion.get(i + 1), true, instruccion.get(1), databaseName, true);
-                                        i = i + 3;
+                                        i = i + 4;
                                     } else {
                                         campo = new Field(instruccion.get(i), instruccion.get(i + 1), true, instruccion.get(1), databaseName, false);
-                                        i = i + 3;
+                                        i = i + 4;
                                     }
                                 } else {
 
                                     if (i == 5) {
                                         campo = new Field(instruccion.get(i), instruccion.get(i + 1), false, instruccion.get(1), databaseName, true);
-                                        i = i + 4;
+                                        i = i + 5;
                                     } else {
                                         campo = new Field(instruccion.get(i), instruccion.get(i + 1), false, instruccion.get(1), databaseName, false);
-                                        i = i + 4;
+                                        i = i + 5;
                                     }
                                 }
                             } else if (instruccion.get(i + 1).equals("decimal")) {
@@ -99,19 +106,19 @@ public class MightyMain {
 
                                     if (i == 5) {
                                         campo = new Field(instruccion.get(i), instruccion.get(i + 1), true, instruccion.get(1), databaseName, true);
-                                        i = i + 8;
+                                        i = i + 9;
                                     } else {
                                         campo = new Field(instruccion.get(i), instruccion.get(i + 1), true, instruccion.get(1), databaseName, false);
-                                        i = i + 8;
+                                        i = i + 9;
                                     }
                                 } else {
 
                                     if (i == 5) {
                                         campo = new Field(instruccion.get(i), instruccion.get(i + 1), false, instruccion.get(1), databaseName, true);
-                                        i = i + 9;
+                                        i = i + 10;
                                     } else {
                                         campo = new Field(instruccion.get(i), instruccion.get(i + 1), false, instruccion.get(1), databaseName, false);
-                                        i = i + 9;
+                                        i = i + 10;
                                     }
                                 }
                             } else {
@@ -120,19 +127,19 @@ public class MightyMain {
 
                                     if (i == 5) {
                                         campo = new Field(instruccion.get(i), instruccion.get(i + 1), true, instruccion.get(1), databaseName, true);
-                                        i = i + 6;
+                                        i = i + 7;
                                     } else {
                                         campo = new Field(instruccion.get(i), instruccion.get(i + 1), true, instruccion.get(1), databaseName, false);
-                                        i = i + 6;
+                                        i = i + 7;
                                     }
                                 } else {
 
                                     if (i == 5) {
                                         campo = new Field(instruccion.get(i), instruccion.get(i + 1), false, instruccion.get(1), databaseName, true);
-                                        i = i + 7;
+                                        i = i + 8;
                                     } else {
                                         campo = new Field(instruccion.get(i), instruccion.get(i + 1), false, instruccion.get(1), databaseName, false);
-                                        i = i + 7;
+                                        i = i + 8;
                                     }
                                 }
                             }
