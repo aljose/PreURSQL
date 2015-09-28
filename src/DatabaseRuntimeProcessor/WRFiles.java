@@ -36,7 +36,6 @@ public class WRFiles {
                     bufferedWriter.write(line);
                     bufferedWriter.newLine();
                 }
-                bufferedWriter.close();
 
                 // Always close files.
 

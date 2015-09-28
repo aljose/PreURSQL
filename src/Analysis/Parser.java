@@ -2,7 +2,6 @@ package Analysis;
 
 import DatabaseRuntimeProcessor.CreateDatabase;
 import DatabaseRuntimeProcessor.CreateTable;
-import DatabaseRuntimeProcessor.MightyMain;
 import Shared.Structures.Field;
 import Shared.Structures.Row;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
  * @author nicolasjimenez
  */
 public class Parser {
-MightyMain mm = new MightyMain();
+
     private final ArrayList<String> comparators;
     private final ArrayList<String> aggregate;
 
@@ -80,7 +79,7 @@ MightyMain mm = new MightyMain();
                 }
 
                 if (!isNumeric(instruction.get(2))) {
-                       mm.processer(instruction, instruction.get(2));
+
                     return true;
                 }
                 return false;
@@ -165,9 +164,7 @@ MightyMain mm = new MightyMain();
         }
         String token1 = instruction.get(1);
         if (token1.equalsIgnoreCase("table") || token1.equalsIgnoreCase("database")) {
-                
-               mm.processer(instruction, instruction.get(2));
-         
+
             return !isNumeric(instruction.get(2));
 
         } else {

@@ -25,11 +25,11 @@ public class DropDatabase {
         FetchMetadata schemas = new FetchMetadata();
         Table dataBaseSchemas = schemas.fetchSchemas();
 
-//        if (verifyExist(dataBaseSchemas, dataBase)) {
-//            System.out.println("No se puede eliminar la base de datos ya que no existe la base de datos");
-//            return;
-//        }
-       // deleteMetadata(dataBase);
+        if (verifyExist(dataBaseSchemas, dataBase)) {
+            System.out.println("No se puede eliminar la base de datos ya que no existe la base de datos");
+            return;
+        }
+        deleteMetadata(dataBase);
         deleteSchema(dataBase);
     }
 
@@ -128,7 +128,6 @@ public class DropDatabase {
 
         StoredDataManager temp = new StoredDataManager();
         temp.dropDatabase(dataBase);
-        
     }
 
 }

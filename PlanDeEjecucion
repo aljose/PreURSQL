@@ -1,3 +1,0 @@
-Se analiza que la instruccion de drop database este bien formulada.
-Se elimina la  carpeta en el sistema de archivos que almacena las tablase de la base de datos: coco.
-Se elimina la iinformacion relacionada de coco de la metadata.

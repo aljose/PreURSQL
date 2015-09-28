@@ -126,7 +126,7 @@ public class DropTable {
         
         StoredDataManager temp = new StoredDataManager();    
         temp.initStoredDataManager(databaseName);
-        System.out.println("Drop table"+temp.dropTable(tableName));
+        temp.dropTable(tableName);
     }
     
 }
