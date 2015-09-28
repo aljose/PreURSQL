@@ -47,7 +47,8 @@ public class DBWriter {
         long position;
         if(this.isInitialized) {
             try {
-                position = file.getFilePointer();
+                position = file.length();
+                file.seek(position);
                 file.writeInt(field.getFieldLength());
                 file.writeUTF(field.getValue());
             } catch (IOException ex) {

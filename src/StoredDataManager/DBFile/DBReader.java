@@ -44,13 +44,11 @@ public class DBReader {
      */
     public DBField readFromDBFile(long position){
         int fieldSize;
-        String fieldName;
         String fieldValue;
         DBField field;
         try{
             file.seek(position);
             fieldSize=file.readInt();
-            fieldName=file.readUTF();
             fieldValue=file.readUTF();
             file.seek(file.length());
             if(fieldSize!=-1){
