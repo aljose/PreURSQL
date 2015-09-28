@@ -47,16 +47,16 @@ public class CreateTable {
         StoredDataManager storer = new StoredDataManager();
         Metadata meta = storer.deserealizateMetadata();
 
-        ArrayList<ArrayList<String>> metadata = meta.getMetadata().get(Constants.TABLES);
-
-        for (ArrayList<String> fila : metadata) {
-
-            if (fila.get(Constants.TABLE_TABNAME).equals(nombreTabla)
-                    && fila.get(Constants.TABLE_SCHNAME).equals(database)) {
-
-                return false;
-            }
-        }
+//        ArrayList<ArrayList<String>> metadata = meta.getMetadata().get(Constants.TABLES);
+//
+//        for (ArrayList<String> fila : metadata) {
+//
+//            if (fila.get(Constants.TABLE_TABNAME).equals(nombreTabla)
+//                    && fila.get(Constants.TABLE_SCHNAME).equals(database)) {
+//
+//                return false;
+//            }
+//        }
         return true;
 
     }
@@ -81,12 +81,11 @@ public class CreateTable {
         filaInsertar.add(database);
         filaInsertar.add(nombreTabla);
         filaInsertar.add(primerCampo.getContent());
-       filaInsertar.add("false");
-       
-        meta.getMetadata().get(Constants.TABLES).add(filaInsertar);
 
-        ArrayList<ArrayList<ArrayList<String>>> metadata = meta.getMetadata();// variable donder se guarda al final
-        meta.setMetadata(metadata);
+//        meta.getMetadata().get(Constants.TABLES).add(filaInsertar);
+
+    //    ArrayList<ArrayList<ArrayList<String>>> metadata = meta.getMetadata();// variable donder se guarda al final
+      //  meta.setMetadata(metadata);
         storer.serializeMetadata(meta);
     }
 
@@ -100,6 +99,16 @@ public class CreateTable {
         StoredDataManager temp = new StoredDataManager();
         temp.initStoredDataManager(database);
         temp.createTableFile(tableName);
+        temp.flushToDisk();
+//        ArrayList<Row>  arrayRow = temp.getAllTuplesFromTable(tableName);
+//        for(int i=0;i<arrayRow.size();i++){
+//            ArrayList<Field> fieldList= arrayRow.get(i).getColumns();
+//            for(int u=0;u<fieldList.size();u++){
+//                System.out.print(fieldList.get(u).getContent()+"   ");
+//            }
+//            System.out.println();
+//        }
+     
     }
 
 }

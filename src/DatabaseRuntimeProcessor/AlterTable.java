@@ -30,19 +30,6 @@ public class AlterTable {
         foreignTable.add(referencedColumn);
         foreignTable.add(tableReferenced);
 
-        ArrayList<ArrayList<String>> filasTab = meta.getMetadata().get(Constants.TABLES);
-        
-        for (int i = 0; i < filasTab.size() ; i++ ) {
-
-            ArrayList<String> fila = filasTab.get(i);
-            
-            if ( fila.get(Constants.TABLE_TABNAME).equals(tableName) && 
-                    fila.get(Constants.TABLE_SCHNAME).equals(schemaName) ) {
-                
-                meta.getMetadata().get(Constants.TABLES).get(i).set(Constants.TABLE_FK, "true");
-            }
-        }
-
         meta.getMetadata().get(Constants.FOREIGNKEY).add(foreignTable);
 
         ArrayList<String> columnTable = new ArrayList<>();
