@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class DisplayDatabase {
 
-    StoredDataManager dataManager;
+private StoredDataManager dataManager;
 
     // FetchMetadata metadata = new FetchMetadata();
     /**
