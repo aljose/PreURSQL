@@ -7,6 +7,7 @@ package GUI;
 
 import Analysis.LexicalAnalysis;
 import Analysis.Parser;
+import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 
@@ -30,7 +31,12 @@ public class GUI extends javax.swing.JFrame {
         this.setExtendedState(MAXIMIZED_BOTH);
         TextLineNumber numLine = new TextLineNumber(textEditor);
         textScrollPanel.setRowHeaderView(numLine);
-        
+        textEditor.setEditable(false);
+        RUN.setEnabled(false);
+        Run.setEnabled(false);
+        bdbutton.setEnabled(false);
+        filebutton.setEnabled(false);
+        savebutton.setEnabled(false);
         FixedColumnExample ejem = new FixedColumnExample();
         
         outputScrollPanel.setViewportView(ejem.table);
@@ -53,7 +59,7 @@ public class GUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        mainPanel = new javax.swing.JPanel();
+        panel = new javax.swing.JPanel();
         treeScrollPanel = new javax.swing.JScrollPane();
         outputTab = new javax.swing.JTabbedPane();
         outputScrollPanel = new javax.swing.JScrollPane();
@@ -61,7 +67,13 @@ public class GUI extends javax.swing.JFrame {
         textCheck = new javax.swing.JTextPane();
         textScrollPanel = new javax.swing.JScrollPane();
         textEditor = new javax.swing.JTextPane();
+        panelButton = new javax.swing.JPanel();
+        start1 = new javax.swing.JButton();
+        start = new javax.swing.JButton();
         RUN = new javax.swing.JButton();
+        bdbutton = new javax.swing.JButton();
+        filebutton = new javax.swing.JButton();
+        savebutton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         File = new javax.swing.JMenu();
         Edit = new javax.swing.JMenu();
@@ -69,7 +81,7 @@ public class GUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        mainPanel.setPreferredSize(new java.awt.Dimension(1000, 900));
+        panel.setPreferredSize(new java.awt.Dimension(1000, 900));
 
         outputTab.addTab("Output", outputScrollPanel);
 
@@ -79,6 +91,21 @@ public class GUI extends javax.swing.JFrame {
 
         textScrollPanel.setViewportView(textEditor);
 
+        start1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/stopIcon.png"))); // NOI18N
+        start1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                start1ActionPerformed(evt);
+            }
+        });
+
+        start.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/start.jpg"))); // NOI18N
+        start.setPreferredSize(new java.awt.Dimension(67, 43));
+        start.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startActionPerformed(evt);
+            }
+        });
+
         RUN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon.png"))); // NOI18N
         RUN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -86,26 +113,75 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
+        bdbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/bd.png"))); // NOI18N
+        bdbutton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bdbuttonActionPerformed(evt);
+            }
+        });
+
+        filebutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/file.jpg"))); // NOI18N
+        filebutton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filebuttonActionPerformed(evt);
+            }
+        });
+
+        savebutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/save.png"))); // NOI18N
+        savebutton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                savebuttonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelButtonLayout = new javax.swing.GroupLayout(panelButton);
+        panelButton.setLayout(panelButtonLayout);
+        panelButtonLayout.setHorizontalGroup(
+            panelButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelButtonLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(start, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(start1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(RUN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bdbutton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(filebutton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(savebutton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(57, Short.MAX_VALUE))
+        );
+        panelButtonLayout.setVerticalGroup(
+            panelButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(start1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(start, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(filebutton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(panelButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addComponent(bdbutton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(RUN, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(savebutton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
+        panel.setLayout(panelLayout);
+        panelLayout.setHorizontalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLayout.createSequentialGroup()
                 .addComponent(treeScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(outputTab)
-                    .addComponent(textScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(RUN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                    .addComponent(panelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(textScrollPanel)))
         );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addComponent(RUN)
+        panelLayout.setVerticalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLayout.createSequentialGroup()
+                .addComponent(panelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(textScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
+                .addComponent(textScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(outputTab, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(treeScrollPanel)
@@ -132,11 +208,11 @@ public class GUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, 573, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
         );
 
         pack();
@@ -188,6 +264,38 @@ public class GUI extends javax.swing.JFrame {
         textCheck.setText(temp);
     }//GEN-LAST:event_RUNActionPerformed
 
+    private void startActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startActionPerformed
+        // TODO add your handling code here:
+        textEditor.setEditable(true);
+        RUN.setEnabled(true);
+        Run.setEnabled(true);
+        bdbutton.setEnabled(true);
+        filebutton.setEnabled(true);
+        savebutton.setEnabled(true);
+    }//GEN-LAST:event_startActionPerformed
+
+    private void start1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start1ActionPerformed
+        // TODO add your handling code here:
+        textEditor.setEditable(false);
+        RUN.setEnabled(false);
+        Run.setEnabled(false);
+        bdbutton.setEnabled(false);
+        filebutton.setEnabled(false);
+        savebutton.setEnabled(false);
+    }//GEN-LAST:event_start1ActionPerformed
+
+    private void bdbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bdbuttonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bdbuttonActionPerformed
+
+    private void filebuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filebuttonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_filebuttonActionPerformed
+
+    private void savebuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_savebuttonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_savebuttonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -231,11 +339,17 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenu File;
     private javax.swing.JButton RUN;
     private javax.swing.JMenuItem Run;
+    private javax.swing.JButton bdbutton;
     private javax.swing.JScrollPane checkScrollPanel;
-    private javax.swing.JPanel mainPanel;
+    private javax.swing.JButton filebutton;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JScrollPane outputScrollPanel;
     private javax.swing.JTabbedPane outputTab;
+    private javax.swing.JPanel panel;
+    private javax.swing.JPanel panelButton;
+    private javax.swing.JButton savebutton;
+    private javax.swing.JButton start;
+    private javax.swing.JButton start1;
     private javax.swing.JTextPane textCheck;
     private javax.swing.JTextPane textEditor;
     private javax.swing.JScrollPane textScrollPanel;

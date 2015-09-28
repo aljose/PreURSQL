@@ -15,8 +15,7 @@ import java.util.ArrayList;
  */
 public class CreateMetadata {
 
-    public CreateMetadata() {
-    }
+    ArrayList<ArrayList<ArrayList<String>>> metadata = new ArrayList<ArrayList<ArrayList<String>>>();
 
     public void buildSystemCatalog() {
         //Definición del nombre del catálogo del sistema.   
@@ -49,13 +48,14 @@ public class CreateMetadata {
         String columnFourthCol = "Type";
         String columnFifthCol = "Constraint";
         String columnSixthCol = "PrimaryKey'";
+        String columnSeventhCol = "ForeignKey";
         columnColumns.add(columnFirstCol);
         columnColumns.add(columnSecondCol);
         columnColumns.add(columnThirdCol);
         columnColumns.add(columnFourthCol);
         columnColumns.add(columnFifthCol);
         columnColumns.add(columnSixthCol);
-
+        columnColumns.add(columnSeventhCol);
         //Definición de las columnas a ingresar en la tabla Query Log.
         ArrayList<String> queryColumns = new ArrayList<String>();
         String queryFirstCol = "Schema";
@@ -67,28 +67,38 @@ public class CreateMetadata {
 
         //Definición de las columnas a ingresar en la tabla Foreign Key.
         ArrayList<String> foreignKeyColumns = new ArrayList<String>();
-        String foreignFirstCol = "Column";
-        String foreignSecondCol = "OriginTable";
-        String foreignThirdCol = "ColumnReferenced";
-        String foreignFourthCol = "TableReferenced";
-        String foreignFifthCol = "Schema";
+        String foreignFirstCol = "Schema";
+        String foreignSecondCol = "Column";
+        String foreignThirdCol = "OriginTable";
+        String foreignFourthCol = "ColumnReferenced";
+        String foreignFifthCol = "TableReferenced";
         foreignKeyColumns.add(foreignFirstCol);
         foreignKeyColumns.add(foreignSecondCol);
         foreignKeyColumns.add(foreignThirdCol);
         foreignKeyColumns.add(foreignFourthCol);
         foreignKeyColumns.add(foreignFifthCol);
 
-        //Creación de las tablas del System Catalog.
-        StoredDataManager metadata = new StoredDataManager();
-        metadata.createDatabase(catalogName);
-        metadata.initStoredDataManager(catalogName);
-        metadata.createTableFile(schemaName);
-        metadata.createTableFile(tableName);
-        metadata.createTableFile(columnName);
-        metadata.createTableFile(schemaName);
-        metadata.createTableFile(queryLogName);
-        metadata.createTableFile(foreignKeyName);
+        StoredDataManager storedDataManager = new StoredDataManager();
+        metadata.get(Constants.SCHEMA).add(schemaColumns);
+        metadata.get(Constants.TABLES).add(tableColumns);
+        metadata.get(Constants.COLUMNS).add(columnColumns);
+        metadata.get(Constants.QUERYLOG).add(queryColumns);
+        metadata.get(Constants.FOREIGNKEY).add(foreignKeyColumns);
+        Metadata met = new Metadata(metadata);
+        storedDataManager.serializeMetadata(met);
 
+        //Serialización del objeto árbol para almacenarlo en disco.
+        /*
+         StoredDataManager metadata = new StoredDataManager();
+         metadata.createDatabase(catalogName);
+         metadata.initStoredDataManager(catalogName);
+         metadata.createTableFile(schemaName);
+         metadata.createTableFile(tableName);
+         metadata.createTableFile(columnName);
+         metadata.createTableFile(schemaName);
+         metadata.createTableFile(queryLogName);
+         metadata.createTableFile(foreignKeyName);
+         */
         // metadata.createTable
         //DatabaseRuntimeProcessor.createDatabase(catalogName);
         //DatabaseRuntimeProcessor.createTable(catalogName, schemaName, schemaColumns);    

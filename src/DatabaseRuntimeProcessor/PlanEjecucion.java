@@ -23,6 +23,7 @@ public class PlanEjecucion {
         this.comando = comando;
         this.instruccion = instruccion;
         this.plan = new ArrayList<String>();
+        procesar();
     }
 
     /**
