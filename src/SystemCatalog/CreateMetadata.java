@@ -37,8 +37,13 @@ public class CreateMetadata {
         ArrayList<String> tableColumns = new ArrayList<String>();
         String tableFirstCol = "SchemaName";
         String tableSecondCol = "TableName";
+        String tableThirdCol = "PrimaryKey";
+        String tableFourthCol = "ForeignKey";
         tableColumns.add(tableFirstCol);
         tableColumns.add(tableSecondCol);
+        
+        tableColumns.add(tableThirdCol);
+        tableColumns.add(tableFourthCol);
 
         //Definición de las columnas a ingresar en la tabla Column.
         ArrayList<String> columnColumns = new ArrayList<String>();
@@ -85,26 +90,6 @@ public class CreateMetadata {
         metadata.get(Constants.QUERYLOG).add(queryColumns);
         metadata.get(Constants.FOREIGNKEY).add(foreignKeyColumns);
         Metadata met = new Metadata(metadata);
-        storedDataManager.serializeMetadata(met);
-
-        //Serialización del objeto árbol para almacenarlo en disco.
-        /*
-         StoredDataManager metadata = new StoredDataManager();
-         metadata.createDatabase(catalogName);
-         metadata.initStoredDataManager(catalogName);
-         metadata.createTableFile(schemaName);
-         metadata.createTableFile(tableName);
-         metadata.createTableFile(columnName);
-         metadata.createTableFile(schemaName);
-         metadata.createTableFile(queryLogName);
-         metadata.createTableFile(foreignKeyName);
-         */
-        // metadata.createTable
-        //DatabaseRuntimeProcessor.createDatabase(catalogName);
-        //DatabaseRuntimeProcessor.createTable(catalogName, schemaName, schemaColumns);    
-        //DatabaseRuntimeProcessor.createTable(catalogName, tableName, tableColumns);
-        //DatabaseRuntimeProcessor.createTable(catalogName, columnName, columnColumns);
-        //DatabaseRuntimeProcessor.createTable(catalogName, queryLogName, queryColumns);
-        //DatabaseRuntimeProcessor.createTable(catalogName, foreignKeyName, foreignKeyColumns); 
+        storedDataManager.serializeMetadata(met); 
     }
 }
