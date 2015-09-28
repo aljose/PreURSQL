@@ -55,7 +55,7 @@ public class StoredDataManager {
             if(currentBTrees!=null){
                 if(currentBTrees.length>0){
                     for(int i=0; i<currentBTrees.length; i++){
-                        mHashBtrees.put(currentBTrees[i], deserealizateBtree(currentBTrees[i].substring(0, currentBTrees[i].length()-4)));
+                        mHashBtrees.put(currentBTrees[i], deserealizateBtree(currentBTrees[i].substring(0, currentBTrees[i].length()-5)));
                     }
                 }
             }
@@ -170,7 +170,7 @@ public class StoredDataManager {
                 }
                 writer.closeFile();
                 Btree.insertar(keyHash.get(rowPKValue), offsets);
-                serializateIndex(keyHash, DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + targetTable + EXTENSION_ARCHIVO_INDICE);
+                serializateIndex(keyHash,  targetTable);
                 serializateBtree(mHashBtrees.get(targetTable), targetTable);
                 result= 1;
             }catch(Exception ex){
