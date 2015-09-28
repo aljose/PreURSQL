@@ -57,7 +57,7 @@ public class StoredDataManager {
             if(currentBTrees!=null){
                 if(currentBTrees.length>0){
                     for(int i=0; i<currentBTrees.length; i++){
-                        getmHashBtrees().put(currentBTrees[i], deserealizateBtree(currentBTrees[i].substring(0, currentBTrees[i].length()-5)));
+                        getmHashBtrees().put(currentBTrees[i].substring(0, currentBTrees[i].length()-5), deserealizateBtree(currentBTrees[i].substring(0, currentBTrees[i].length()-5)));
                     }
                 }
             }
