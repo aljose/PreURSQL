@@ -1,9 +1,6 @@
 package DatabaseRuntimeProcessor;
 
-import Shared.Structures.Field;
 import Shared.Structures.Metadata;
-import Shared.Structures.Row;
-import Shared.Structures.Table;
 import StoredDataManager.Main.StoredDataManager;
 import SystemCatalog.Constants;
 import java.util.ArrayList;
@@ -17,7 +14,7 @@ public class DisplayDatabase {
 
     StoredDataManager dataManager;
 
-   // FetchMetadata metadata = new FetchMetadata();
+    // FetchMetadata metadata = new FetchMetadata();
     /**
      *
      * @param schemaName
@@ -49,8 +46,8 @@ public class DisplayDatabase {
         ArrayList<String> row;
         String element;
         boolean result = false;
-        for (int i = 1; i < met.get(Constants.SCHEMA).size(); i++) {
-            row = met.get(Constants.SCHEMA).get(Constants.SCHEMA_SCHNAME);
+        for (int i = 0; i < met.get(Constants.SCHEMA).size(); i++) {
+            row = met.get(Constants.SCHEMA).get(i);
             element = row.get(i);
             if (element.equals(schemaName)) {
                 result = true;
@@ -64,20 +61,23 @@ public class DisplayDatabase {
 
     @SuppressWarnings("empty-statement")
     private ArrayList<String> gatherMatchingTables(String schemaName) {
-        Table tableSet;
-        tableSet = metadata.fetchTables();
+        Metadata metadata = new Metadata();
+        metadata = dataManager.deserealizateMetadata();
+        ArrayList<ArrayList<ArrayList<String>>> met = metadata.getMetadata();
+        ArrayList<ArrayList<String>> tableSet;
+        tableSet = met.get(Constants.TABLES);
         int i = 1;
         ArrayList<String> tables = new ArrayList<String>();
-        while (i < tableSet.getLength()) {
-            for (int j = 0; j < tableSet.getRows().get(i).getColumns().size(); j++) {
-                if (tableSet.getRows().get(i).getColumns().get(0).getContent().equals(schemaName)) {
-                    tables.add(tableSet.getRows().get(i).getColumns().get(1).getContent());
-                } else {
-                    ;
-                }
+        while (i < tableSet.size()) {
+            ArrayList<String> row = tableSet.get(i);
+            String element = row.get(Constants.TABLE_SCHNAME);
+            if (element.equals(schemaName)) {
+                tables.add(element);
+            } else {
+                ;
             }
-            i++;
         }
+        i++;
         return tables;
     }
 
@@ -112,8 +112,12 @@ public class DisplayDatabase {
     }
 
     private String describeTables(String schemaName, ArrayList<String> tablesName) {
-        Table columnTable = metadata.fetchColumns();
-        Row columnsNames = columnTable.getRows().get(0);
+        Metadata metadata = new Metadata();
+        metadata = dataManager.deserealizateMetadata();
+        ArrayList<ArrayList<ArrayList<String>>> met = metadata.getMetadata();
+        ArrayList<ArrayList<String>> columnTable;
+        columnTable = met.get(Constants.COLUMNS);
+        ArrayList<String> row;
         StringBuilder result = new StringBuilder();
         result.append("Lista de columnas para la base de datos: ");
         result.append(schemaName);
@@ -122,27 +126,44 @@ public class DisplayDatabase {
             result.append("La tabla: ");
             result.append(tablesName.get(k));
             result.append(" posee las siguientes columnas: \n");
-            result.append("Nombre               Tipo               IsNull               isPK               \n");
-
-            for (int i = 1; i < columnTable.getLength(); i++) {
-                for (int j = 0; j < columnTable.getRows().get(i).getColumns().size(); j++) { //Cantidad elementos de una fila
-                    Field element = columnTable.getRows().get(i).getColumns().get(j); //Elemento
-                    if (element.getSchemaName().equals(schemaName)
-                            && element.getTableName().equals(tablesName.get(k))) {
-                        result.append(element.getContent());
-                        result.append(" ");
-                        result.append(element.getType());
-                        result.append(" ");
-                        result.append(element.getIsNull());
-                        result.append(" ");
-                        result.append(element.isPrimaryKey());
-                        result.append(" \n");
-                    }
+            result.append("Nombre               Tipo               IsNull               isPK               isFK                \n");
+            for (int i = 0; i < columnTable.size(); i++) {
+                row = columnTable.get(i);
+                String currSchema = row.get(Constants.COLUMNS_SCHNAME);
+                String currTable = row.get(Constants.COLUMNS_TABNAME);
+                if (currSchema.equals(schemaName) && currTable.equals(tablesName.get(k))) {
+                    result.append(row.get(Constants.COLUMNS_COL));
+                    result.append("                ");
+                    result.append(row.get(Constants.COLUMNS_TYPE));
+                    result.append("                ");
+                    result.append(row.get(Constants.COLUMNS_CONSTRAINT));
+                    result.append("                ");
+                    result.append(row.get(Constants.COLUMNS_PK));
+                    result.append("                ");
+                    result.append(row.get(Constants.COLUMNS_FK));
+                    result.append("                 \n");
                 }
-
             }
-
         }
-        return result.toString();
+/*
+        for (int j = 0; j < columnTable.getRows().get(i).getColumns().size(); j++) { //Cantidad elementos de una fila
+            Field element = columnTable.getRows().get(i).getColumns().get(j); //Elemento
+            if (element.getSchemaName().equals(schemaName)
+                    && element.getTableName().equals(tablesName.get(k))) {
+                result.append(element.getContent());
+                result.append(" ");
+                result.append(element.getType());
+                result.append(" ");
+                result.append(element.getIsNull());
+                result.append(" ");
+                result.append(element.isPrimaryKey());
+                result.append(" \n");
+            }
+        }
+
+    }
+
+}*/
+return result.toString();
     }
 }
