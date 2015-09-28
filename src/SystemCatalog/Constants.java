@@ -20,6 +20,7 @@ public final class Constants {
     public static final int TABLE_SCHNAME = 0;
     public static final int TABLE_TABNAME = 1;
     public static final int TABLE_PK = 2;
+    public static final int TABLE_FK =3;
     
  /*Columnas Columns*/
     public static final int COLUMNS_SCHNAME = 0;
