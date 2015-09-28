@@ -4,8 +4,7 @@ package StoredDataManager.Main; /**
 
 
 import StoredDataManager.BPlusTree.ArbolBMas;
-import StoredDataManager.DBFile.DBField;
-import StoredDataManager.DBFile.DBWriter;
+import StoredDataManager.DBFile.*;
 import Shared.Structures.Field;
 import Shared.Structures.Row;
 import Shared.Structures.Metadata;
@@ -14,6 +13,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 
 /**
@@ -31,9 +33,9 @@ public class StoredDataManager {
     /**
      * Constante que almacena la direccion de la carpeta en el sistema donde se almacenan las bases
      * de datos
-     */
+     */ 
     protected static final String DIRECTORIO_DATOS = "Databases";
-    protected static final String METADATA_PATH_TO_FILE=".system"+File.separator+"metadata.dat";
+    protected static final String METADATA_PATH_TO_FILE="system"+File.separator+"metadata.dat";
     protected static final String EXTENSION_ARCHIVO_TABLA =".db";
     protected static final String EXTENSION_ARCHIVO_ARBOL=".tree";
     protected static final String EXTENSION_ARCHIVO_INDICE=".index";
@@ -55,7 +57,7 @@ public class StoredDataManager {
             if(currentBTrees!=null){
                 if(currentBTrees.length>0){
                     for(int i=0; i<currentBTrees.length; i++){
-                        mHashBtrees.put(currentBTrees[i], deserealizateBtree(currentBTrees[i].substring(0, currentBTrees[i].length()-4)));
+                        mHashBtrees.put(currentBTrees[i], deserealizateBtree(currentBTrees[i].substring(0, currentBTrees[i].length()-5)));
                     }
                 }
             }
@@ -170,7 +172,7 @@ public class StoredDataManager {
                 }
                 writer.closeFile();
                 Btree.insertar(keyHash.get(rowPKValue), offsets);
-                serializateIndex(keyHash, DIRECTORIO_DATOS + File.separator + getmCurrentDataBase() + File.separator + targetTable + EXTENSION_ARCHIVO_INDICE);
+                serializateIndex(keyHash,  targetTable);
                 serializateBtree(mHashBtrees.get(targetTable), targetTable);
                 result= 1;
             }catch(Exception ex){
@@ -188,7 +190,7 @@ public class StoredDataManager {
      */
     public int dropTable(String name) {
         int result=0;
-        if (isInitialized){
+        if (getisInitialized()){
             File archivoArbol = new File(DIRECTORIO_DATOS+File.separator+getmCurrentDataBase()+File.separator+name+EXTENSION_ARCHIVO_ARBOL);
             File archivoDatos = new File(DIRECTORIO_DATOS+File.separator+getmCurrentDataBase()+File.separator+name+EXTENSION_ARCHIVO_TABLA);
             File archivoIndex = new File(DIRECTORIO_DATOS+File.separator+getmCurrentDataBase()+File.separator+name+EXTENSION_ARCHIVO_INDICE);
@@ -468,15 +470,117 @@ public class StoredDataManager {
            int numberRecords=0;
            if(getisInitialized()){
                LinkedHashMap<String,Long> keyHash= deserializateIndex(tableName);
+               if(keyHash!=null)
                numberRecords=keyHash.size();
+               else
+                   return -1;
            }else{
                System.err.println("Necesita inicializar el StoredDataManager " );
            }
            return numberRecords;
         }
         
-    
-    
-    
-    
+        /**Metodo encargado de crear un indice sobre el campo de la tabla especificado
+         * 
+         * @param tableName
+         * @param indexName
+         * @param columnNum
+         * @return 
+         */
+        public int createIndex(String tableName, String indexName, int columnNum){
+            int result;
+                if(getisInitialized()){
+                    int numberRecords= numberOfRecords(tableName);
+                    ArbolBMas Btree = getmHashBtrees().get(tableName);
+                    LinkedHashMap<String,Long> indexHash= new LinkedHashMap<String,Long>();
+                    DBReader reader= new DBReader();
+                    reader.setTableFile(DIRECTORIO_DATOS+File.separator+getmCurrentDataBase()+File.separator+tableName+EXTENSION_ARCHIVO_TABLA);
+                    DBField field;
+                    for(long i=0; i<numberRecords; i++){
+                        long[] arrayLong=(long[]) Btree.search(i);
+                        field=reader.readFromDBFile(arrayLong[columnNum-2]);
+                        indexHash.put(field.getValue(), i);
+                    }
+                    reader.closeFile();
+                    result=serializateIndex(indexHash, indexName);
+               }else{
+               System.err.println("Necesita inicializar el StoredDataManager " );
+               result=-1;
+               }
+            return result;
+        }
+        
+        /**
+         * Metodo encargado de borrar el indice indicado
+         * @param indexName
+         * @return 
+         */
+        public int deleteIndex(String indexName){
+             int result=0;
+                if(getisInitialized()){
+                    File archivoIndex = new File(DIRECTORIO_DATOS+File.separator+getmCurrentDataBase()+File.separator+indexName+EXTENSION_ARCHIVO_INDICE);
+                    if(archivoIndex.delete()) {
+                        result = 1;
+                    }
+               }else{
+               System.err.println("Necesita inicializar el StoredDataManager " );
+               result=-1;
+               }
+            return result;
+        }
+        
+        /**
+         * Metodo encargado de devolver todas las filas de una tabla dada
+         * @param tableName
+         * @return 
+         */
+        public ArrayList<Row> getAllTuplesFromTable(String tableName){
+            ArrayList<Row> rowList=new ArrayList<Row>();
+            if(getisInitialized()){
+                int numberRecords= numberOfRecords(tableName);
+                ArbolBMas Btree = getmHashBtrees().get(tableName);
+                LinkedHashMap<String,Long> keyHash= deserializateIndex(tableName);
+                DBReader reader= new DBReader();
+                reader.setTableFile(DIRECTORIO_DATOS+File.separator+getmCurrentDataBase()+File.separator+tableName+EXTENSION_ARCHIVO_TABLA);
+                
+                for(long i=0; i<numberRecords; i++){
+                    Row fila=new Row();
+                    ArrayList<Field> fieldList= new ArrayList<Field>();
+                    long[] arrayLong=(long[]) Btree.search(i);
+                    String pkValue = null;
+                    for (Map.Entry<String, Long> entry : keyHash.entrySet()) {
+                        if(entry.getValue().equals(i)){
+                            pkValue=entry.getKey();
+                        }
+                    }
+                    Field pkField=new Field(pkValue,"",false,tableName,this.getmCurrentDataBase(),true);
+                    fieldList.add(pkField);
+                    for(int u=0; u<arrayLong.length;u++){
+                        DBField dataFilefield= reader.readFromDBFile(arrayLong[u]);
+                        if(dataFilefield!=null){
+                            Field dataField= new Field(dataFilefield.getValue(),"",false,tableName,this.getmCurrentDataBase(),false);
+                            fieldList.add(dataField);
+                        }else{
+                            System.err.println("ha ocurrido un error al obtener los campos desde el hdd" );
+                            return null;
+                        }
+                    }
+                    fila.setColumns(fieldList);
+                    rowList.add(fila);
+                }
+                reader.closeFile();
+                return rowList;
+            }else{
+            System.err.println("Necesita inicializar el StoredDataManager " );
+            return null;
+               }
+        }
+        
+        
+        public int deleteRow(String pkRow){
+            return 0;
+        }
+        
+        
+         
 }

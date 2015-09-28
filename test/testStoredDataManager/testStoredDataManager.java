@@ -30,16 +30,16 @@ public class testStoredDataManager {
         Row row = new Row(fields);
         row.setTableName("Tabla1");
         storedDataManager.insertIntoTable(row);
+        System.out.println(storedDataManager.numberOfRecords("Tabla1"));
 
         fields = new ArrayList<Field>();
         fields.add(new Field("valorc1","String",false,"Tabla1", "prueba",true));
         fields.add(new Field("valorcacabubu", "String", false,"Tabla1", "prueba",false));
         fields.add(new Field("valormecague","String",false,"Tabla1", "prueba",false));
-        fields.add(new Field("valoryiscrist","String",false,"Tabla1", "prueba",false));
-        fields.add(new Field("valor4194","String",false,"Tabla1", "prueba",false));
         row = new Row(fields);
         row.setTableName("Tabla1");
         storedDataManager.insertIntoTable(row);
+        System.out.println(storedDataManager.numberOfRecords("Tabla1"));
 
         storedDataManager.createDatabase("prueba2");
         storedDataManager.initStoredDataManager("prueba2");
@@ -77,7 +77,38 @@ public class testStoredDataManager {
          row = new Row(fields);
          row.setTableName("Tabla2");
         storedDataManager.insertIntoTable(row);
-        storedDataManager.dropDatabase("prueba2");
+        fields = new ArrayList<Field>();
+        fields.add(new Field("sdads","String",false,"Tabla2", "prueba2",true));
+        fields.add(new Field("dvvc vv", "String", false,"Tabla2", "prueba2",false));
+        fields.add(new Field("34343","String",false,"Tabla2", "prueba2",false));
+        fields.add(new Field("sdsas","String",false,"Tabla2", "prueba2",false));
+        fields.add(new Field("yujyjj", "String", false,"Tabla2", "prueba2",false));
+         row = new Row(fields);
+         row.setTableName("Tabla2");
+        storedDataManager.insertIntoTable(row);
+        fields = new ArrayList<Field>();
+        fields.add(new Field("ccccc","String",false,"Tabla2", "prueba2",true));
+        fields.add(new Field("kdnkfndsf", "String", false,"Tabla2", "prueba2",false));
+        fields.add(new Field("oejfidkjf","String",false,"Tabla2", "prueba2",false));
+        fields.add(new Field("dfdfdf","String",false,"Tabla2", "prueba2",false));
+        fields.add(new Field("dfdgsff", "String", false,"Tabla2", "prueba2",false));
+        row = new Row(fields);
+        row.setTableName("Tabla2");
+        storedDataManager.insertIntoTable(row);
+        //storedDataManager.createIndex("Tabla2", "index1", 3);
+        //storedDataManager.dropDatabase("prueba2");
+        ArrayList<Row> arrayRow =storedDataManager.getAllTuplesFromTable("Tabla2");
+        for(int i=0;i<arrayRow.size();i++){
+            ArrayList<Field> fieldList= arrayRow.get(i).getColumns();
+            for(int u=0;u<fieldList.size();u++){
+                System.out.print(fieldList.get(u).getContent()+"   ");
+            }
+            System.out.println();
+        }
+        storedDataManager.initStoredDataManager("prueba");
+        System.out.println(storedDataManager.numberOfRecords("Tabla2"));
+        storedDataManager.dropTable("Tabla2");
+        System.out.println(storedDataManager.numberOfRecords("Tabla2"));
 
 
 
